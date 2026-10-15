@@ -1,0 +1,1885 @@
+<!DOCTYPE html>
+<html lang="id" class="h-full bg-slate-50 text-slate-800">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>TrigoLimitLab - Lab Maya Limit Fungsi Trigonometri</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = { theme: { extend: { fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'], mono: ['Fira Code', 'monospace'] } } } }
+  </script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js" onload="renderMath()"></script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+  <style>
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #f1f5f9; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #0284c7; }
+    canvas { touch-action: none; user-select: none; -webkit-user-select: none; }
+    .glass-panel { background: rgba(255,255,255,.95); backdrop-filter: blur(12px); border: 1px solid rgba(0,0,0,.08); box-shadow: 0 4px 6px -1px rgba(0,0,0,.05), 0 2px 4px -1px rgba(0,0,0,.03); }
+    .glass-card { background: rgba(248,250,252,.92); backdrop-filter: blur(8px); border: 1px solid rgba(0,0,0,.05); }
+    input, select, textarea { -webkit-user-select: text; user-select: text; }
+
+    .h-input { width: 7.2rem; height: 36px; text-align: center; font-weight: 700; font-size: .9rem; color: #1e293b; background: #fff;
+               border: 1px solid #cbd5e1; border-radius: 8px; box-shadow: inset 0 1px 2px rgba(0,0,0,.06); }
+    .h-input::placeholder { color: #94a3b8; font-weight: 600; font-style: italic; }
+    .h-input:focus { outline: none; border-color: #f59e0b; box-shadow: 0 0 0 2px rgba(245,158,11,.25); }
+    .h-input.cell-ok  { border-color: #10b981 !important; background: #ecfdf5 !important; }
+    .h-input.cell-bad { border-color: #f43f5e !important; background: #fff1f2 !important; }
+    .h-input.cell-near{ border-color: #f59e0b !important; background: #fffbeb !important; }
+    .hk { min-width: 2.4rem; height: 32px; padding: 0 .55rem; border: 1px solid #fcd34d; background: #fffbeb; color: #92400e; border-radius: 8px; font-size: .75rem; font-weight: 800; transition: transform .08s, background .15s; }
+    .hk:hover { background: #fef3c7; } .hk:active { transform: scale(.94); }
+    .ex-btn { padding: .4rem .9rem; border-radius: 8px; border: 1px solid #cbd5e1; background: #fff; font-size: .75rem; font-weight: 800; color: #475569; }
+    .ex-btn.on { background: #fef3c7; border-color: #f59e0b; color: #92400e; }
+    .ex-group.cell-ok .ex-btn.on { background: #d1fae5; border-color: #10b981; color: #065f46; }
+    .ex-group.cell-bad .ex-btn { border-color: #f43f5e; }
+
+    #assistant-win { width: 340px; max-width: calc(100vw - 16px); max-height: min(60vh, 540px); border-radius: 16px; transition: opacity .15s, box-shadow .15s; }
+    #assistant-win.dragging { opacity: .78; box-shadow: 0 25px 50px -12px rgba(0,0,0,.35); }
+    #assistant-head { cursor: grab; touch-action: none; }
+    #assistant-win.dragging #assistant-head { cursor: grabbing; }
+    @media (max-width: 1023px) {
+      #assistant-win { left: 0 !important; right: 0 !important; top: auto !important; bottom: 0 !important; width: 100%; max-width: 100%; max-height: 52vh; border-radius: 20px 20px 0 0; }
+    }
+
+    #print-area { display: none; }
+    @media print {
+      html, body { height: auto !important; overflow: visible !important; background: #fff !important; }
+      body { display: block !important; }
+      body > *:not(#print-area) { display: none !important; }
+      #print-area { display: block !important; color: #111; font-size: 12px; line-height: 1.5; }
+      #print-area .pa-q { page-break-inside: avoid; margin: 0 0 12px; padding-bottom: 8px; border-bottom: 1px solid #ccc; }
+      #print-area table { width: 100%; border-collapse: collapse; margin: 8px 0 14px; }
+      #print-area th, #print-area td { border: 1px solid #999; padding: 4px 6px; text-align: left; }
+      #print-area th { background: #eee; }
+    }
+    summary { list-style: none; } summary::-webkit-details-marker { display: none; }
+    #mobile-sec-panel > * { flex-shrink: 0; }
+    button:focus-visible, input:focus-visible, select:focus-visible, summary:focus-visible { outline: 3px solid #6366f1; outline-offset: 2px; }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; animation: none !important; scroll-behavior: auto !important; } }
+    .lim-row td { padding: 6px 8px; }
+  </style>
+</head>
+<body class="h-full flex flex-col font-sans overflow-x-hidden antialiased text-slate-800 select-none bg-slate-50">
+
+  <!-- COVER -->
+  <div id="cover-screen" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-white p-4 transition-opacity duration-500">
+    <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-sky-50 via-white to-white pointer-events-none"></div>
+    <div class="relative z-10 max-w-2xl w-full text-center space-y-6 p-6 sm:p-8 rounded-3xl glass-panel border border-sky-100 shadow-2xl">
+      <div class="inline-flex items-center gap-3 px-4 py-1.5 rounded-full bg-sky-50 border border-sky-200 text-sky-700 text-xs sm:text-sm font-bold tracking-wide uppercase">
+        <i class="fa-solid fa-flask"></i> Laboratorium Maya Interaktif Trigonometri
+      </div>
+      <div class="space-y-2">
+        <h1 class="text-3xl sm:text-5xl font-black tracking-tight text-slate-900">
+          Trigo<span class="text-transparent bg-clip-text bg-gradient-to-r from-sky-600 via-teal-500 to-emerald-600">LimitLab</span>
+        </h1>
+        <p class="text-slate-600 text-sm sm:text-base font-medium leading-relaxed max-w-lg mx-auto">
+          Eksplorasi &amp; Penemuan Terbimbing Konsep Limit Fungsi Trigonometri
+          <span class="text-sky-700 font-semibold block sm:inline">(Limit Kiri &amp; Kanan, Limit Fundamental, Bentuk 0/0 &amp; Asimptot)</span>
+        </p>
+      </div>
+      <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 text-left text-xs sm:text-sm text-slate-600 space-y-2">
+        <div class="flex items-center justify-between text-slate-500 pb-2 border-b border-slate-200">
+          <span><i class="fa-solid fa-code text-sky-600 mr-2"></i>Pengembang Media:</span>
+          <span class="font-bold text-slate-800 text-sm">I Made Agus Suputrayasa</span>
+        </div>
+        <div class="flex items-center justify-between text-slate-500 pt-1">
+          <span><i class="fa-solid fa-graduation-cap text-teal-600 mr-2"></i>Pendekatan Pembelajaran:</span>
+          <span class="font-bold text-teal-700">Guided Discovery Learning</span>
+        </div>
+        <div class="flex items-center justify-between text-slate-500 pt-1">
+          <span><i class="fa-solid fa-ruler-combined text-amber-600 mr-2"></i>Mode Sudut:</span>
+          <span class="font-bold text-amber-700">Radian (rad) &middot; &pi; rad = 180&deg;</span>
+        </div>
+      </div>
+      <div class="pt-2 flex justify-center">
+        <button onclick="startApp()" class="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-gradient-to-r from-sky-600 to-teal-500 hover:from-sky-500 hover:to-teal-400 text-white font-bold text-base shadow-lg shadow-sky-500/30 active:scale-95 transition-all flex items-center justify-center gap-2">
+          <i class="fa-solid fa-play"></i> Mulai Eksplorasi Lab
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- APP -->
+  <div id="app-container" class="hidden h-full flex flex-col">
+    <header class="h-14 sm:h-16 border-b border-slate-200 bg-white/90 backdrop-blur px-3 sm:px-6 flex items-center justify-between shrink-0 z-30">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-sky-600 to-teal-500 flex items-center justify-center text-white font-black text-lg shadow-md shadow-sky-500/20">T</div>
+        <div>
+          <h1 class="font-bold text-base sm:text-lg text-slate-900 leading-none">TrigoLimitLab</h1>
+          <p class="text-[10px] sm:text-xs text-slate-500 hidden sm:block">Topik : <span class="text-slate-700 font-semibold">Limit Fungsi Trigonometri</span></p>
+        </div>
+      </div>
+      <nav class="flex items-center bg-slate-100 p-1 rounded-xl border border-slate-200">
+        <button onclick="switchTab('lab')" id="nav-lab" class="nav-tab px-3 py-1.5 rounded-lg text-xs sm:text-sm font-bold transition-all text-sky-700 bg-white border border-slate-200 shadow-sm"><i class="fa-solid fa-compass sm:mr-1.5"></i><span class="hidden sm:inline">Lab Maya</span></button>
+        <button onclick="switchTab('materi')" id="nav-materi" class="nav-tab px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold text-slate-500 hover:text-slate-700 transition-all"><i class="fa-solid fa-book-open sm:mr-1.5"></i><span class="hidden sm:inline">Materi</span></button>
+        <button onclick="switchTab('evaluasi')" id="nav-evaluasi" class="nav-tab px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold text-slate-500 hover:text-slate-700 transition-all"><i class="fa-solid fa-pen-ruler sm:mr-1.5"></i><span class="hidden sm:inline">Evaluasi</span></button>
+        <button onclick="switchTab('refleksi')" id="nav-refleksi" class="nav-tab px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold text-slate-500 hover:text-slate-700 transition-all"><i class="fa-solid fa-lightbulb sm:mr-1.5"></i><span class="hidden sm:inline">Refleksi</span></button>
+      </nav>
+      <div class="flex items-center gap-1.5 sm:gap-2">
+        <button onclick="openModal('info-modal')" class="p-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-600 hover:text-sky-600 transition-all text-xs sm:text-sm" title="Informasi"><i class="fa-solid fa-circle-info"></i></button>
+        <button onclick="openModal('guide-modal')" class="p-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-600 hover:text-sky-600 transition-all text-xs sm:text-sm" title="Petunjuk"><i class="fa-solid fa-circle-question"></i></button>
+        <button onclick="toggleFullscreen()" class="p-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-600 hover:text-sky-600 transition-all text-xs sm:text-sm" title="Layar Penuh"><i id="fullscreen-icon" class="fa-solid fa-expand"></i></button>
+      </div>
+    </header>
+
+    <!-- TAB: LAB -->
+    <main id="tab-lab" class="tab-page flex-1 flex flex-col overflow-hidden">
+      <div class="bg-white border-b border-slate-200 p-2 sm:p-3 flex flex-wrap items-center justify-between gap-2 shrink-0">
+        <div class="flex items-center gap-1.5">
+          <span class="text-xs text-slate-500 font-semibold hidden md:inline">Fungsi:</span>
+          <select id="select-fn" onchange="setFunction(this.value)" class="bg-slate-50 border border-slate-300 text-sky-700 font-semibold text-xs rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500 max-w-[220px]"></select>
+        </div>
+        <div class="flex flex-wrap items-center gap-2 bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5">
+          <span class="text-xs font-black text-orange-600">Target $a$ = <span id="val-a" class="font-mono text-sm">0</span></span>
+          <input id="sl-a" type="range" min="-24" max="24" step="1" value="0" oninput="updateA(this.value)" class="w-24 sm:w-36" style="accent-color:#ea580c" aria-label="Nilai target a dalam kelipatan pi per 12 radian">
+          <span id="preset-group" class="flex gap-1" role="group" aria-label="Titik pendekatan khas">
+            <button type="button" data-k="0" onclick="setK(0)" class="ex-btn !px-2 !py-1">0</button>
+            <button type="button" data-k="2" onclick="setK(2)" class="ex-btn !px-2 !py-1">π/6</button>
+            <button type="button" data-k="3" onclick="setK(3)" class="ex-btn !px-2 !py-1">π/4</button>
+            <button type="button" data-k="6" onclick="setK(6)" class="ex-btn !px-2 !py-1">π/2</button>
+            <button type="button" data-k="12" onclick="setK(12)" class="ex-btn !px-2 !py-1">π</button>
+          </span>
+        </div>
+        <span class="px-2.5 py-1.5 rounded-lg bg-amber-50 border border-amber-300 text-amber-800 text-xs font-black flex items-center gap-1.5" title="Semua sudut dihitung dalam radian"><i class="fa-solid fa-ruler-combined"></i> Mode Radian aktif</span>
+        <button onclick="resetLabView()" class="px-2.5 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-600 border border-slate-200 text-xs font-bold flex items-center gap-1"><i class="fa-solid fa-arrows-rotate"></i> Reset</button>
+      </div>
+
+      <div class="flex lg:hidden bg-white border-b border-slate-200">
+        <button onclick="switchMobileLabTab('canvas')" id="mob-tab-canvas" class="flex-1 py-2.5 text-center text-xs font-black text-sky-600 border-b-2 border-sky-600 bg-sky-50/50"><i class="fa-solid fa-chart-line mr-1"></i> Canvas Visual</button>
+        <button onclick="switchMobileLabTab('panel')" id="mob-tab-panel" class="flex-1 py-2.5 text-center text-xs font-bold text-slate-500 border-b-2 border-transparent"><i class="fa-solid fa-sliders mr-1"></i> Kontrol &amp; Tabel</button>
+      </div>
+
+      <div class="flex-1 grid grid-cols-1 lg:grid-cols-12 overflow-hidden bg-slate-100">
+        <!-- Kiri: kanvas -->
+        <div id="mobile-sec-canvas" class="lg:col-span-7 xl:col-span-8 bg-white relative flex flex-col h-full overflow-hidden shadow-inner">
+          <div class="absolute top-3 left-3 z-10 flex flex-col gap-1 pointer-events-none">
+            <div class="glass-card px-3 py-2 rounded-lg text-xs font-medium space-y-1 shadow-sm">
+              <div class="flex items-center gap-2"><span class="w-4 h-0.5 bg-cyan-600 inline-block"></span><span class="text-slate-700">Grafik $y=f(x)$</span></div>
+              <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-blue-600 inline-block"></span><span class="text-slate-700">Pelacak kiri $x\to a^-$</span></div>
+              <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-emerald-600 inline-block"></span><span class="text-slate-700">Pelacak kanan $x\to a^+$</span></div>
+              <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full border-2 border-cyan-700 bg-white inline-block"></span><span class="text-slate-700">Titik berlubang ($f$ tak terdefinisi di sana)</span></div>
+              <div id="legend-ghost" class="hidden items-center gap-2"><span class="w-2.5 h-2.5 rotate-45 border-2 border-amber-500 inline-block"></span><span class="text-slate-700">Prediksi hipotesismu</span></div>
+            </div>
+          </div>
+
+          <div class="absolute top-3 right-3 z-10 flex flex-col gap-1.5">
+            <button onclick="zoomCanvas(1.2)" class="p-2.5 rounded-lg glass-card hover:bg-slate-100 text-slate-700 text-xs shadow-sm border border-slate-200" title="Zoom In"><i class="fa-solid fa-plus"></i></button>
+            <button onclick="zoomCanvas(0.8)" class="p-2.5 rounded-lg glass-card hover:bg-slate-100 text-slate-700 text-xs shadow-sm border border-slate-200" title="Zoom Out"><i class="fa-solid fa-minus"></i></button>
+            <button onclick="recenter(true)" class="p-2.5 rounded-lg glass-card hover:bg-slate-100 text-slate-700 text-xs shadow-sm border border-slate-200" title="Pusatkan pada x = a"><i class="fa-solid fa-crosshairs"></i></button>
+          </div>
+
+          <div class="flex-1 w-full h-full relative cursor-crosshair">
+            <canvas id="lab-canvas" role="img" aria-label="Bidang Cartesius" class="absolute inset-0 w-full h-full"></canvas>
+            <div id="anim-info" role="status" aria-live="polite" class="absolute bottom-3 right-3 z-10 glass-card px-3 py-2 rounded-lg text-[11px] font-bold shadow-sm pointer-events-none space-y-0.5"></div>
+            <button id="assistant-fab" onclick="openAssistant()" title="Buka Asisten Penemuan" aria-label="Buka Asisten Penemuan" class="hidden absolute z-20 left-3 bottom-3 items-center gap-2 px-3 sm:px-3.5 py-2.5 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-white text-xs font-bold shadow-lg shadow-amber-500/30 active:scale-95 transition-all">
+              <i class="fa-solid fa-lightbulb"></i><span class="hidden sm:inline">Asisten Penemuan</span>
+            </button>
+          </div>
+
+          <!-- Bilah pendekatan -->
+          <div id="anim-bar" class="px-3 py-2 bg-slate-50 border-t border-slate-200 flex flex-wrap items-center gap-x-3 gap-y-2">
+            <button id="anim-play" onclick="toggleAnimation()" class="px-3.5 py-2 rounded-lg bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white text-xs font-bold shadow-sm active:scale-95 transition-all flex items-center gap-2">
+              <i id="anim-play-icon" class="fa-solid fa-play"></i><span id="anim-play-label">Jalankan Pendekatan</span>
+            </button>
+            <button onclick="playAnimation(true)" class="px-2.5 py-2 rounded-lg bg-white border border-slate-300 text-slate-600 text-xs font-bold hover:bg-slate-100 active:scale-95" title="Ulangi dari awal" aria-label="Ulangi dari awal"><i class="fa-solid fa-rotate-left"></i></button>
+            <div class="flex items-center gap-2 flex-1 min-w-[150px]">
+              <input id="anim-scrub" type="range" min="0" max="100" value="0" oninput="scrubAnimation(this.value)" class="w-full" style="accent-color:#7c3aed" aria-label="Seberapa dekat x menuju a (Δx)">
+              <span id="anim-pct" class="text-[11px] font-mono font-bold text-slate-600 w-[78px] text-right">Δx = 1</span>
+            </div>
+            <div class="flex items-center gap-1" role="group" aria-label="Kecepatan">
+              <button id="anim-sp-0.5" onclick="setAnimSpeed(0.5)" class="px-2 py-1 rounded-md border text-[11px] font-bold">0,5×</button>
+              <button id="anim-sp-1" onclick="setAnimSpeed(1)" class="px-2 py-1 rounded-md border text-[11px] font-bold">1×</button>
+              <button id="anim-sp-2" onclick="setAnimSpeed(2)" class="px-2 py-1 rounded-md border text-[11px] font-bold">2×</button>
+            </div>
+            <label class="flex items-center gap-1.5 text-[11px] font-bold text-slate-600 cursor-pointer" title="Tampilkan jejak pelacak">
+              <input id="anim-trace" type="checkbox" checked onchange="toggleTrace(this.checked)" class="rounded" style="accent-color:#7c3aed"> Jejak
+            </label>
+          </div>
+
+          <div class="p-2 bg-white/95 text-center text-[11px] font-medium text-slate-500 border-t border-slate-200">
+            <i class="fa-solid fa-hand-pointer text-sky-500 mr-1"></i>
+            Geser <strong>titik oranye</strong> pada sumbu X untuk mengubah $a$ (kelipatan $\frac{\pi}{12}$ rad), dan geser penggeser Δx untuk mendekatkan pelacak. Tekan <strong>Jalankan Pendekatan</strong> untuk melihat prosesnya.
+          </div>
+        </div>
+
+        <!-- Kanan: panel -->
+        <div id="mobile-sec-panel" class="hidden lg:flex lg:col-span-5 xl:col-span-4 bg-slate-50 border-l border-slate-200 flex-col h-full overflow-y-auto p-4 space-y-4">
+
+          <!-- Langkah 1 -->
+          <section id="step-1" class="shrink-0 rounded-2xl border border-slate-200 bg-white/60 overflow-hidden">
+            <button id="step-head-1" type="button" onclick="goToStep(1)" aria-expanded="false" aria-controls="step-body-1" class="w-full flex items-center gap-3 px-4 py-3 text-left">
+              <span id="step-badge-1" class="w-7 h-7 rounded-full flex items-center justify-center text-xs font-black shrink-0 bg-slate-200 text-slate-500">1</span>
+              <span class="flex-1 min-w-0">
+                <span class="block text-sm font-black text-slate-800">Amati</span>
+                <span class="block text-[11px] text-slate-500 font-medium leading-snug">Baca tabel pendekatan dari kiri dan kanan, lalu geser Δx.</span>
+              </span>
+              <i id="step-chev-1" class="fa-solid fa-chevron-down text-slate-400 text-xs"></i>
+            </button>
+            <div id="step-body-1" class="hidden px-3 pb-3 space-y-3">
+              <div class="glass-panel p-4 rounded-2xl space-y-2">
+                <h3 class="font-black text-sm text-sky-600 flex items-center gap-2 pb-2 border-b border-slate-100"><i class="fa-solid fa-function"></i><i class="fa-solid fa-square-root-variable"></i> Fungsi yang diamati</h3>
+                <div id="fn-tex" class="text-center text-slate-900 overflow-x-auto py-1"></div>
+                <div id="fa-readout" class="text-center text-xs font-bold text-slate-600"></div>
+              </div>
+
+              <div id="pattern-slot-1">
+                <div id="pattern-card" class="glass-panel p-4 rounded-2xl space-y-3">
+                  <div class="flex items-center justify-between pb-2 border-b border-slate-100">
+                    <h3 class="font-black text-sm text-teal-600 flex items-center gap-2"><i class="fa-solid fa-table"></i> Tabel Pendekatan Nilai</h3>
+                    <button onclick="openAssistant('pola')" class="text-[11px] text-sky-600 hover:text-sky-700 underline font-bold"><i class="fa-solid fa-wand-magic-sparkles mr-1"></i>Petunjuk</button>
+                  </div>
+                  <div class="overflow-x-auto rounded-xl border border-slate-200">
+                    <table class="w-full text-center text-[11px] font-mono bg-white">
+                      <thead class="bg-slate-100 text-slate-600 border-b border-slate-200">
+                        <tr>
+                          <th class="py-2 px-2 font-semibold">Δx</th>
+                          <th class="py-2 px-2 font-semibold text-blue-700">$x$ kiri (rad)</th>
+                          <th class="py-2 px-2 font-semibold text-blue-700">$f(x)$</th>
+                          <th class="py-2 px-2 font-semibold text-emerald-700">$x$ kanan (rad)</th>
+                          <th class="py-2 px-2 font-semibold text-emerald-700">$f(x)$</th>
+                        </tr>
+                      </thead>
+                      <tbody id="limit-table-body" class="divide-y divide-slate-100 text-slate-700 font-medium"></tbody>
+                    </table>
+                  </div>
+                  <p class="text-[10px] text-slate-500 leading-relaxed">Baris kuning mengikuti penggeser Δx di bawah kanvas. Perhatikan: ke mana $f(x)$ menuju dari kiri, dan ke mana dari kanan?</p>
+                </div>
+              </div>
+
+              <button onclick="completeStep(1)" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-600 hover:to-indigo-700 text-white font-bold text-xs shadow-md active:scale-95 transition-all">Lanjut: Buat Prediksi <i class="fa-solid fa-chevron-right ml-1"></i></button>
+            </div>
+          </section>
+
+          <!-- Langkah 2 -->
+          <section id="step-2" class="shrink-0 rounded-2xl border border-slate-200 bg-white/60 overflow-hidden">
+            <button id="step-head-2" type="button" onclick="goToStep(2)" aria-expanded="false" aria-controls="step-body-2" class="w-full flex items-center gap-3 px-4 py-3 text-left">
+              <span id="step-badge-2" class="w-7 h-7 rounded-full flex items-center justify-center text-xs font-black shrink-0 bg-slate-200 text-slate-500">2</span>
+              <span class="flex-1 min-w-0">
+                <span class="block text-sm font-black text-slate-800">Prediksi</span>
+                <span class="block text-[11px] text-slate-500 font-medium leading-snug">Tuliskan limit kiri, limit kanan, dan kesimpulanmu.</span>
+              </span>
+              <i id="step-chev-2" class="fa-solid fa-chevron-down text-slate-400 text-xs"></i>
+            </button>
+            <div id="step-body-2" class="hidden px-3 pb-3 space-y-3">
+              <div id="pattern-slot-2"></div>
+              <div class="glass-panel p-4 rounded-2xl space-y-3 border-l-4 border-l-amber-400 shadow-sm">
+                <div class="pb-2 border-b border-slate-100">
+                  <h3 class="font-black text-sm text-amber-600 flex items-center gap-2"><i class="fa-solid fa-grip mr-1"></i> Formulasi Hipotesis</h3>
+                </div>
+                <div id="hyp-form" class="space-y-2.5">
+                  <div class="flex items-center justify-between gap-2"><span id="lbl-l1" class="text-sm text-slate-800"></span><input type="text" id="h-l1" inputmode="decimal" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="L₁" oninput="onHypInput(this)" class="h-input"></div>
+                  <div class="flex items-center justify-between gap-2"><span id="lbl-l2" class="text-sm text-slate-800"></span><input type="text" id="h-l2" inputmode="decimal" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="L₂" oninput="onHypInput(this)" class="h-input"></div>
+                  <div class="flex items-center justify-between gap-2">
+                    <span class="text-sm text-slate-800 font-semibold">Apakah limitnya ada?</span>
+                    <span id="ex-group" class="ex-group flex gap-1.5">
+                      <button type="button" id="ex-ada" onclick="setExist('ada')" class="ex-btn">Ada</button>
+                      <button type="button" id="ex-tidak" onclick="setExist('tidak')" class="ex-btn">Tidak Ada</button>
+                    </span>
+                  </div>
+                  <div class="flex items-center justify-between gap-2"><span id="lbl-l" class="text-sm text-slate-800"></span><input type="text" id="h-l" inputmode="decimal" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="L / tidak ada" oninput="onHypInput(this)" class="h-input"></div>
+                </div>
+
+                <div class="space-y-1.5">
+                  <p class="text-[10px] text-slate-500 font-semibold text-center">Tombol pintas (mengisi kotak yang sedang dipilih):</p>
+                  <div class="flex flex-wrap gap-1.5 justify-center">
+                    <button type="button" class="hk" onmousedown="event.preventDefault()" onclick="keyInsert('±')" title="Balik tanda">±</button>
+                    <button type="button" class="hk" onmousedown="event.preventDefault()" onclick="keyInsert('0')">0</button>
+                    <button type="button" class="hk" onmousedown="event.preventDefault()" onclick="keyInsert('1')">1</button>
+                    <button type="button" class="hk" onmousedown="event.preventDefault()" onclick="keyInsert('0,5')">0,5</button>
+                    <button type="button" class="hk" onmousedown="event.preventDefault()" onclick="keyInsert('1/2')">1/2</button>
+                    <button type="button" class="hk" onmousedown="event.preventDefault()" onclick="keyInsert('∞')">∞</button>
+                    <button type="button" class="hk" onmousedown="event.preventDefault()" onclick="keyInsert('-∞')">−∞</button>
+                    <button type="button" class="hk" onmousedown="event.preventDefault()" onclick="keyInsert('π')">π</button>
+                    <button type="button" class="hk" onmousedown="event.preventDefault()" onclick="keyInsert('tidak ada')">tidak ada</button>
+                    <button type="button" class="hk" onmousedown="event.preventDefault()" onclick="keyInsert('⌫')" title="Hapus">⌫</button>
+                  </div>
+                  <p class="text-[10px] text-slate-500 text-center leading-relaxed">Boleh desimal (0,5), pecahan (1/2), π, atau ∞ / −∞ untuk limit tak hingga. Kotak <em>terakhir</em> diisi angka, atau &ldquo;tidak ada&rdquo;.</p>
+                </div>
+                <div class="text-center"><button type="button" onclick="openAssistant('notasi')" class="text-[11px] text-sky-600 hover:text-sky-700 underline font-bold"><i class="fa-solid fa-spell-check mr-1"></i>Bantuan: notasi limit</button></div>
+              </div>
+              <p id="step2-warn" class="hidden text-xs font-bold text-amber-600 text-center"></p>
+              <button onclick="completeStep(2)" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-600 hover:to-indigo-700 text-white font-bold text-xs shadow-md active:scale-95 transition-all">Lanjut ke Uji <i class="fa-solid fa-chevron-right ml-1"></i></button>
+            </div>
+          </section>
+
+          <!-- Langkah 3 -->
+          <section id="step-3" class="shrink-0 rounded-2xl border border-slate-200 bg-white/60 overflow-hidden">
+            <button id="step-head-3" type="button" onclick="goToStep(3)" aria-expanded="false" aria-controls="step-body-3" class="w-full flex items-center gap-3 px-4 py-3 text-left">
+              <span id="step-badge-3" class="w-7 h-7 rounded-full flex items-center justify-center text-xs font-black shrink-0 bg-slate-200 text-slate-500">3</span>
+              <span class="flex-1 min-w-0">
+                <span class="block text-sm font-black text-slate-800">Uji</span>
+                <span class="block text-[11px] text-slate-500 font-medium leading-snug">Cocokkan prediksimu dengan perilaku grafik yang sebenarnya.</span>
+              </span>
+              <i id="step-chev-3" class="fa-solid fa-chevron-down text-slate-400 text-xs"></i>
+            </button>
+            <div id="step-body-3" class="hidden px-3 pb-3 space-y-3">
+              <div id="pattern-slot-3"></div>
+              <div class="glass-panel p-4 rounded-2xl space-y-3 border-l-4 border-l-amber-400 shadow-sm">
+                <p class="text-[11px] font-black text-slate-500 uppercase tracking-wide">Prediksimu</p>
+                <div id="pred-summary" class="text-center text-sm overflow-x-auto py-1"></div>
+                <button onclick="testHypothesis()" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-white font-bold text-xs shadow-md active:scale-95 transition-all flex items-center justify-center gap-2"><i class="fa-solid fa-vial"></i> Uji Hipotesis</button>
+                <div id="matrix-feedback" role="status" aria-live="polite" class="hidden p-3 rounded-xl text-xs font-medium border text-center leading-relaxed"></div>
+              </div>
+              <div class="grid grid-cols-2 gap-2">
+                <button onclick="goToStep(2)" class="py-2.5 rounded-xl bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 font-bold text-xs active:scale-95 transition-all"><i class="fa-solid fa-chevron-left mr-1"></i> Ubah Prediksi</button>
+                <button onclick="goToStep(4)" class="py-2.5 rounded-xl bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-600 hover:to-indigo-700 text-white font-bold text-xs shadow-md active:scale-95 transition-all"><span id="step3-next-label">Lihat animasi dulu</span> <i class="fa-solid fa-chevron-right ml-1"></i></button>
+              </div>
+            </div>
+          </section>
+
+          <!-- Langkah 4 -->
+          <section id="step-4" class="shrink-0 rounded-2xl border border-slate-200 bg-white/60 overflow-hidden">
+            <button id="step-head-4" type="button" onclick="goToStep(4)" aria-expanded="false" aria-controls="step-body-4" class="w-full flex items-center gap-3 px-4 py-3 text-left">
+              <span id="step-badge-4" class="w-7 h-7 rounded-full flex items-center justify-center text-xs font-black shrink-0 bg-slate-200 text-slate-500">4</span>
+              <span class="flex-1 min-w-0">
+                <span class="block text-sm font-black text-slate-800">Animasi &amp; Kesimpulan</span>
+                <span class="block text-[11px] text-slate-500 font-medium leading-snug">Tonton dua pelacak meluncur ke x = a, lalu tarik kesimpulan.</span>
+              </span>
+              <i id="step-chev-4" class="fa-solid fa-chevron-down text-slate-400 text-xs"></i>
+            </button>
+            <div id="step-body-4" class="hidden px-3 pb-3 space-y-3">
+              <div class="glass-panel p-4 rounded-2xl space-y-3 border-l-4 border-l-purple-400 shadow-sm">
+                <p class="text-xs text-slate-600 leading-relaxed">Tekan tombol di bawah. Perhatikan apakah kedua pelacak (biru dan hijau) <strong>bertemu di ketinggian yang sama</strong> ketika mendekati garis $x = a$. Geser penggeser Δx untuk berhenti di tengah proses.</p>
+                <button onclick="playFromStep()" class="w-full py-3 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-bold text-sm shadow-md active:scale-95 transition-all"><i class="fa-solid fa-play mr-2"></i>Jalankan Pendekatan</button>
+                <div id="step4-concl" class="hidden p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-xs font-bold text-emerald-900 leading-relaxed"></div>
+              </div>
+              <div class="grid grid-cols-2 gap-2">
+                <button onclick="goToStep(3)" class="py-2.5 rounded-xl bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 font-bold text-xs active:scale-95 transition-all"><i class="fa-solid fa-chevron-left mr-1"></i> Kembali ke Uji</button>
+                <button onclick="restartSteps()" class="py-2.5 rounded-xl bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 font-bold text-xs active:scale-95 transition-all"><i class="fa-solid fa-rotate-right mr-1"></i> Coba dari Awal</button>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </main>
+
+    <!-- TAB: MATERI -->
+<main id="tab-materi" class="tab-page hidden flex-1 overflow-y-auto p-4 sm:p-8 bg-slate-50 relative">
+<div class="max-w-3xl mx-auto space-y-6 pb-24">
+<div class="text-center space-y-2 border-b border-slate-200 pb-4"><h2 class="text-2xl sm:text-3xl font-black text-slate-900">Konsep Limit Fungsi Trigonometri</h2><p class="text-slate-500 text-sm font-medium">Dari tabel radian, ke grafik, lalu ke rumus: setiap konsep dibangun bertahap</p></div>
+<div id="materi-page-1" class="materi-page block glass-panel p-6 sm:p-8 rounded-2xl border-l-4 border-l-slate-500 space-y-4">
+<h3 class="text-xl font-black text-slate-700 flex items-center gap-2 border-b border-slate-100 pb-3"><i class="fa-solid fa-diagram-project"></i> 1. Pengantar Limit Trigonometri &amp; Mode Radian</h3>
+<p class="text-slate-700 text-sm leading-relaxed">Limit fungsi trigonometri menjawab pertanyaan yang sama dengan limit lain: <strong>ke nilai berapa $f(x)$ menuju</strong> ketika $x$ mendekati $a$. Bedanya, sudut $x$ <strong>wajib diukur dalam radian</strong>.</p>
+<div class="p-4 bg-slate-50 rounded-xl text-center border border-slate-200 text-slate-900">$$ \lim_{x \to a} f(x) = L $$</div>
+<div class="p-4 bg-amber-50 border-amber-200 text-amber-900 rounded-xl border space-y-1"><p class="text-sm font-bold"><i class='fa-solid fa-ruler-combined mr-1'></i>Mengapa harus radian?</p><p class='text-sm text-slate-700 leading-relaxed'>Satu putaran penuh $= 360^\circ = 2\pi$ rad, sehingga $\pi$ rad $= 180^\circ$. Rumus limit trigonometri hanya berlaku untuk radian. Pada mode derajat, $\dfrac{\sin x}{x}$ untuk $x$ kecil bernilai sekitar $\dfrac{\pi}{180} \approx 0{,}0175$, bukan $1$.</p></div>
+<h4 class="font-bold text-slate-700">Sudut istimewa dalam radian</h4>
+<div class="overflow-x-auto rounded-xl border border-slate-200"><table class="w-full text-center text-xs sm:text-sm bg-white"><thead class="bg-slate-100 text-slate-700"><tr><th class="py-2 px-3">Derajat</th><th class="py-2 px-3">$0^\circ$</th><th class="py-2 px-3">$30^\circ$</th><th class="py-2 px-3">$45^\circ$</th><th class="py-2 px-3">$90^\circ$</th><th class="py-2 px-3">$180^\circ$</th></tr></thead><tbody class="text-slate-700"><tr><td class="py-2 px-3 font-bold">Radian</td><td>$0$</td><td>$\frac{\pi}{6} \approx 0{,}5236$</td><td>$\frac{\pi}{4} \approx 0{,}7854$</td><td>$\frac{\pi}{2} \approx 1{,}5708$</td><td>$\pi \approx 3{,}1416$</td></tr></tbody></table></div>
+<h4 class="font-bold text-slate-700">Tabel nilai $f(x) = \sin x$ untuk $x \to \frac{\pi}{6}$ (radian)</h4>
+<div class="overflow-x-auto rounded-xl border border-slate-200"><table class="w-full text-center text-xs sm:text-sm bg-white"><thead class="bg-sky-50 text-sky-800"><tr><th class="py-2 px-3">$x$ (kiri)</th><th class="py-2 px-3">$\sin x$</th><th class="py-2 px-3">$x$ (kanan)</th><th class="py-2 px-3">$\sin x$</th></tr></thead><tbody class="divide-y divide-slate-100 text-slate-700"><tr><td class="py-2 px-3">0,4236</td><td class="py-2 px-3">0,41104</td><td class="py-2 px-3">0,6236</td><td class="py-2 px-3">0,58396</td></tr><tr><td class="py-2 px-3">0,5136</td><td class="py-2 px-3">0,49131</td><td class="py-2 px-3">0,5336</td><td class="py-2 px-3">0,50864</td></tr><tr><td class="py-2 px-3">0,5226</td><td class="py-2 px-3">0,49913</td><td class="py-2 px-3">0,5246</td><td class="py-2 px-3">0,50087</td></tr><tr class="font-bold text-emerald-700"><td class="py-2 px-3">$\to \frac{\pi}{6}^-$</td><td class="py-2 px-3">$\to 0{,}5$</td><td class="py-2 px-3">$\to \frac{\pi}{6}^+$</td><td class="py-2 px-3">$\to 0{,}5$</td></tr></tbody></table></div>
+<div class="p-4 bg-amber-50 rounded-xl border border-amber-200 space-y-1"><p class="text-sm font-bold text-amber-800">Dua gagasan penting</p><ul class="list-disc list-inside text-sm text-slate-700 space-y-0.5 ml-2"><li>$x$ boleh <strong>sangat dekat</strong> dengan $a$ tetapi tidak harus sama dengan $a$.</li><li>Nilai limit ditentukan oleh perilaku $f$ <strong>di sekitar</strong> $a$, bukan oleh $f(a)$.</li></ul></div>
+<button type="button" onclick="toggleReveal('mx-p1', this)" aria-expanded="false" class="px-3 py-2 rounded-lg bg-slate-700 hover:bg-slate-800 text-white text-xs font-bold shadow-sm active:scale-95"><i class="fa-solid fa-eye mr-1"></i>Lihat definisi informal</button>
+<div id="mx-p1" class="hidden p-4 rounded-xl bg-slate-100 border border-slate-200 text-sm text-slate-700 leading-relaxed"><strong>Definisi informal.</strong> $\lim_{x \to a} f(x) = L$ berarti $f(x)$ dapat dibuat sedekat mungkin dengan $L$ dengan mengambil $x$ (dalam radian) cukup dekat dengan $a$ dari kedua sisi, $x \neq a$. Untuk sinus yang kontinu, $L = \sin a$.</div>
+<button type="button" onclick="tryInLab('trig_sin', 2)" class="px-3 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-sm active:scale-95"><i class="fa-solid fa-flask mr-1.5"></i>Coba di Lab: $\sin x$ untuk $x \to \frac{\pi}{6}$</button>
+</div>
+<div id="materi-page-2" class="materi-page hidden glass-panel p-6 sm:p-8 rounded-2xl border-l-4 border-l-sky-500 space-y-4">
+<h3 class="text-xl font-black text-sky-700 flex items-center gap-2 border-b border-slate-100 pb-3"><i class="fa-solid fa-arrows-left-right"></i> 2. Limit Kiri dan Kanan pada Fungsi Gelombang</h3>
+<p class="text-slate-700 text-sm leading-relaxed">Pendekatan ke $a$ dapat dari <strong>kiri</strong> ($x \to a^-$) atau <strong>kanan</strong> ($x \to a^+$). Pada fungsi trigonometri terpotong, kedua sisi dapat menuju tinggi berbeda.</p>
+<h4 class="font-bold text-sky-700">Langkah 1: Tabel nilai</h4>
+<p class="text-sm text-slate-600">$f(x) = \begin{cases} \sin x, &amp; x &lt; 0 \\ \cos x, &amp; x \ge 0 \end{cases}$ dengan $x \to 0$.</p>
+<div class="overflow-x-auto rounded-xl border border-slate-200"><table class="w-full text-center text-xs sm:text-sm bg-white"><thead class="bg-sky-50 text-sky-800"><tr><th class="py-2 px-3">$x$ (kiri)</th><th class="py-2 px-3">$f(x)=\sin x$</th><th class="py-2 px-3">$x$ (kanan)</th><th class="py-2 px-3">$f(x)=\cos x$</th></tr></thead><tbody class="divide-y divide-slate-100 text-slate-700"><tr><td class="py-2 px-3">&minus;0,100</td><td class="py-2 px-3">&minus;0,09983</td><td class="py-2 px-3">0,100</td><td class="py-2 px-3">0,99500</td></tr><tr><td class="py-2 px-3">&minus;0,010</td><td class="py-2 px-3">&minus;0,01000</td><td class="py-2 px-3">0,010</td><td class="py-2 px-3">0,99995</td></tr><tr><td class="py-2 px-3">&minus;0,001</td><td class="py-2 px-3">&minus;0,00100</td><td class="py-2 px-3">0,001</td><td class="py-2 px-3">1,00000</td></tr><tr class="font-bold text-emerald-700"><td class="py-2 px-3">$\to 0^-$</td><td class="py-2 px-3">$\to 0$</td><td class="py-2 px-3">$\to 0^+$</td><td class="py-2 px-3">$\to 1$</td></tr></tbody></table></div>
+<div class="p-4 bg-white rounded-xl border border-slate-200 shadow-sm space-y-2"><h4 class="font-bold text-slate-800 text-sm"><i class="fa-solid fa-pencil text-sky-600 mr-1"></i>Contoh Soal</h4><p class="text-sm text-slate-700">Untuk fungsi di atas, tentukan $\lim_{x\to 0^-} f(x)$ dan $\lim_{x\to 0^+} f(x)$.</p><p class="text-sm text-slate-700">Kiri memakai $\sin x$: $\sin 0 = 0$. Kanan memakai $\cos x$: $\cos 0 = 1$. Maka $L_1 = 0$ dan $L_2 = 1$, sedangkan $f(0) = 1$.</p></div>
+<h4 class="font-bold text-sky-700">Langkah 3: Notasi</h4>
+<button type="button" onclick="toggleReveal('mx-p2', this)" aria-expanded="false" class="px-3 py-2 rounded-lg bg-sky-600 hover:bg-sky-700 text-white text-xs font-bold shadow-sm active:scale-95"><i class="fa-solid fa-eye mr-1"></i>Lihat notasi</button>
+<div id="mx-p2" class="hidden space-y-3"><div class="p-4 bg-sky-50 rounded-xl text-center border border-sky-100 text-sky-900">$$ \lim_{x \to a^-} f(x) = L_1 \qquad \lim_{x \to a^+} f(x) = L_2 $$</div><p class="text-slate-600 text-xs bg-slate-100 p-3 rounded-lg leading-relaxed">$L_1$ adalah nilai yang didekati $f(x)$ untuk $x &lt; a$; $L_2$ untuk $x &gt; a$. Pada fungsi di atas, $L_1 \ne L_2$ sehingga grafik <strong>melompat</strong> di $x = 0$.</p></div>
+<button type="button" onclick="tryInLab('trig_piecewise', 0)" class="px-3 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-sm active:scale-95"><i class="fa-solid fa-flask mr-1.5"></i>Coba di Lab: fungsi trigonometri melompat</button>
+</div>
+<div id="materi-page-3" class="materi-page hidden glass-panel p-6 sm:p-8 rounded-2xl border-l-4 border-l-teal-500 space-y-4">
+<h3 class="text-xl font-black text-teal-700 flex items-center gap-2 border-b border-slate-100 pb-3"><i class="fa-solid fa-eye"></i> 3. Limit Spesial $\frac{\sin x}{x}$: Pembuktian Visual</h3>
+<p class="text-slate-700 text-sm leading-relaxed">Fungsi $f(x) = \dfrac{\sin x}{x}$ tidak terdefinisi di $x = 0$ (bentuk $\frac{0}{0}$). Apakah limitnya juga tidak ada? Periksa dulu lewat tabel.</p>
+<h4 class="font-bold text-teal-700">Langkah 1: Tabel nilai (radian)</h4>
+<div class="overflow-x-auto rounded-xl border border-slate-200"><table class="w-full text-center text-xs sm:text-sm bg-white"><thead class="bg-teal-50 text-teal-800"><tr><th class="py-2 px-3">$x$ (kiri)</th><th class="py-2 px-3">$\dfrac{\sin x}{x}$</th><th class="py-2 px-3">$x$ (kanan)</th><th class="py-2 px-3">$\dfrac{\sin x}{x}$</th></tr></thead><tbody class="divide-y divide-slate-100 text-slate-700"><tr><td class="py-2 px-3">&minus;0,100</td><td class="py-2 px-3">0,9983342</td><td class="py-2 px-3">0,100</td><td class="py-2 px-3">0,9983342</td></tr><tr><td class="py-2 px-3">&minus;0,010</td><td class="py-2 px-3">0,9999833</td><td class="py-2 px-3">0,010</td><td class="py-2 px-3">0,9999833</td></tr><tr><td class="py-2 px-3">&minus;0,001</td><td class="py-2 px-3">0,9999998</td><td class="py-2 px-3">0,001</td><td class="py-2 px-3">0,9999998</td></tr><tr class="font-bold text-emerald-700"><td class="py-2 px-3">$\to 0^-$</td><td class="py-2 px-3">$\to 1$</td><td class="py-2 px-3">$\to 0^+$</td><td class="py-2 px-3">$\to 1$</td></tr></tbody></table></div>
+<h4 class="font-bold text-teal-700">Langkah 2: Alasan geometri</h4>
+<p class="text-sm text-slate-600">Pada lingkaran satuan dengan $0 &lt; x &lt; \frac{\pi}{2}$, bandingkan tiga panjang: <span class="font-bold text-blue-700">$\sin x$</span>, busur <span class="font-bold text-cyan-700">$x$</span>, dan <span class="font-bold text-rose-700">$\tan x$</span>.</p>
+<div class="p-3 bg-white rounded-xl border border-slate-200"><svg viewBox="0 0 260 215" class="w-full max-w-sm mx-auto" role="img" aria-label="Lingkaran satuan: segmen sin x, busur x, dan segmen tan x">
+<line x1="12" y1="190" x2="250" y2="190" stroke="#94a3b8" stroke-width="1.2"/><line x1="30" y1="205" x2="30" y2="20" stroke="#94a3b8" stroke-width="1.2"/>
+<path d="M180 190 A150 150 0 0 0 30 40" fill="none" stroke="#cbd5e1" stroke-width="1.5"/>
+<path d="M180.0 190.0 A150 150 0 0 0 144.7 93.4" fill="none" stroke="#0891b2" stroke-width="3.5"/>
+<line x1="30" y1="190" x2="180.0" y2="63.7" stroke="#64748b" stroke-width="1.5"/>
+<line x1="144.7" y1="93.4" x2="144.7" y2="190" stroke="#2563eb" stroke-width="3"/>
+<line x1="180" y1="190" x2="180.0" y2="63.7" stroke="#e11d48" stroke-width="3"/>
+<circle cx="144.7" cy="93.4" r="3.5" fill="#0f172a"/>
+<path d="M52 190 A22 22 0 0 0 46.8 175.8" fill="none" stroke="#475569" stroke-width="1.2"/>
+<g font-size="11" font-family="Inter, sans-serif" font-weight="700">
+<text x="92.7" y="145.7" fill="#2563eb">sin x</text>
+<text x="186" y="126.8" fill="#e11d48">tan x</text>
+<text x="152.7" y="83.4" fill="#0e7490">busur x</text>
+<text x="56" y="184" fill="#475569" font-size="10">x</text><text x="22" y="204" fill="#475569">O</text><text x="176" y="204" fill="#475569">1</text></g></svg></div>
+<div class="p-4 bg-teal-50 rounded-xl border border-teal-100 space-y-1"><p class="text-sm text-slate-700 leading-relaxed">Dari gambar, $\sin x &lt; x &lt; \tan x$. Bagi dengan $\sin x$ lalu balik: $\cos x &lt; \dfrac{\sin x}{x} &lt; 1$. Saat $x \to 0$, $\cos x \to 1$, sehingga $\dfrac{\sin x}{x}$ terapit di antara dua nilai yang menuju $1$.</p></div>
+<div class="p-4 bg-amber-50 border-amber-200 text-amber-800 rounded-xl border space-y-1"><p class="text-sm font-bold">Jangan tertukar: $f(0)$ bukan limit</p><p class='text-sm text-slate-700 leading-relaxed'>$f(0)$ tak terdefinisi (lubang di $(0, 1)$), tetapi limitnya <strong>ada</strong> dan sama dengan $1$.</p></div>
+<div class="p-4 bg-white rounded-xl border border-slate-200 shadow-sm space-y-2"><h4 class="font-bold text-slate-800 text-sm"><i class="fa-solid fa-pencil text-teal-600 mr-1"></i>Contoh Soal</h4><p class="text-sm text-slate-700">Tentukan $\lim_{x\to 0}\dfrac{\sin 5x}{x}$.</p><p class="text-sm text-slate-700">$\dfrac{\sin 5x}{x} = 5\cdot\dfrac{\sin 5x}{5x} \to 5 \cdot 1 = 5$.</p></div>
+<button type="button" onclick="toggleReveal('mx-p3', this)" aria-expanded="false" class="px-3 py-2 rounded-lg bg-teal-600 hover:bg-teal-700 text-white text-xs font-bold shadow-sm active:scale-95"><i class="fa-solid fa-eye mr-1"></i>Lihat rumus</button>
+<div id="mx-p3" class="hidden space-y-3"><div class="p-4 bg-teal-50 rounded-xl text-center border border-teal-100 text-teal-900 overflow-x-auto">$$ \lim_{x \to 0} \frac{\sin x}{x} = 1 \qquad \lim_{x \to 0} \frac{\sin ax}{bx} = \frac{a}{b} $$</div><p class="text-slate-600 text-xs bg-slate-100 p-3 rounded-lg leading-relaxed">Berlaku bila $x$ dalam <strong>radian</strong>. Pada derajat, nilainya $\frac{\pi}{180}$.</p></div>
+<button type="button" onclick="tryInLab('trig_fundamental_sin', 0)" class="px-3 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-sm active:scale-95"><i class="fa-solid fa-flask mr-1.5"></i>Coba di Lab: $\frac{\sin x}{x}$ untuk $x \to 0$</button>
+</div>
+<div id="materi-page-4" class="materi-page hidden glass-panel p-6 sm:p-8 rounded-2xl border-l-4 border-l-purple-500 space-y-4">
+<h3 class="text-xl font-black text-purple-700 flex items-center gap-2 border-b border-slate-100 pb-3"><i class="fa-solid fa-circle-notch"></i> 4. Limit Spesial Tangen $\frac{\tan x}{x}$</h3>
+<p class="text-slate-700 text-sm leading-relaxed">Fungsi $f(x) = \dfrac{\tan x}{x}$ juga berlubang di $x = 0$. Amati kemiripannya dengan sinus.</p>
+<h4 class="font-bold text-purple-700">Langkah 1: Tabel nilai</h4>
+<div class="overflow-x-auto rounded-xl border border-slate-200"><table class="w-full text-center text-xs sm:text-sm bg-white"><thead class="bg-purple-50 text-purple-800"><tr><th class="py-2 px-3">$x$ (kiri)</th><th class="py-2 px-3">$\dfrac{\tan x}{x}$</th><th class="py-2 px-3">$x$ (kanan)</th><th class="py-2 px-3">$\dfrac{\tan x}{x}$</th></tr></thead><tbody class="divide-y divide-slate-100 text-slate-700"><tr><td class="py-2 px-3">&minus;0,100</td><td class="py-2 px-3">1,0033467</td><td class="py-2 px-3">0,100</td><td class="py-2 px-3">1,0033467</td></tr><tr><td class="py-2 px-3">&minus;0,010</td><td class="py-2 px-3">1,0000333</td><td class="py-2 px-3">0,010</td><td class="py-2 px-3">1,0000333</td></tr><tr><td class="py-2 px-3">&minus;0,001</td><td class="py-2 px-3">1,0000003</td><td class="py-2 px-3">0,001</td><td class="py-2 px-3">1,0000003</td></tr><tr class="font-bold text-emerald-700"><td class="py-2 px-3">$\to 0^-$</td><td class="py-2 px-3">$\to 1$</td><td class="py-2 px-3">$\to 0^+$</td><td class="py-2 px-3">$\to 1$</td></tr></tbody></table></div>
+<h4 class="font-bold text-purple-700">Langkah 2: Mengapa menuju 1?</h4>
+<div class="p-4 bg-purple-50 rounded-xl border border-purple-100 text-sm text-slate-700 leading-relaxed">Tulis $\tan x = \dfrac{\sin x}{\cos x}$, sehingga $\dfrac{\tan x}{x} = \dfrac{\sin x}{x} \cdot \dfrac{1}{\cos x} \to 1 \cdot \dfrac{1}{1} = 1$. Perhatikan nilai tabel selalu <em>sedikit di atas</em> 1: $\tan x &gt; x$.</div>
+<div class="p-4 bg-white rounded-xl border border-slate-200 shadow-sm space-y-2"><h4 class="font-bold text-slate-800 text-sm"><i class="fa-solid fa-pencil text-purple-600 mr-1"></i>Contoh Soal</h4><p class="text-sm text-slate-700">Tentukan $\lim_{x\to 0}\dfrac{\tan 3x}{x}$.</p><p class="text-sm text-slate-700">$\dfrac{\tan 3x}{x} = 3\cdot\dfrac{\tan 3x}{3x} \to 3 \cdot 1 = 3$.</p></div>
+<button type="button" onclick="toggleReveal('mx-p4', this)" aria-expanded="false" class="px-3 py-2 rounded-lg bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold shadow-sm active:scale-95"><i class="fa-solid fa-eye mr-1"></i>Lihat rumus</button>
+<div id="mx-p4" class="hidden space-y-2"><div class="p-4 bg-purple-50 rounded-xl text-center border border-purple-100 text-purple-900 overflow-x-auto">$$ \lim_{x \to 0} \frac{\tan x}{x} = 1 \qquad \lim_{x \to 0} \frac{\tan ax}{bx} = \frac{a}{b} $$</div></div>
+<button type="button" onclick="tryInLab('trig_fundamental_tan', 0)" class="px-3 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-sm active:scale-95"><i class="fa-solid fa-flask mr-1.5"></i>Coba di Lab: $\frac{\tan x}{x}$ untuk $x \to 0$</button>
+</div>
+<div id="materi-page-5" class="materi-page hidden glass-panel p-6 sm:p-8 rounded-2xl border-l-4 border-l-amber-500 space-y-4">
+<h3 class="text-xl font-black text-amber-700 flex items-center gap-2 border-b border-slate-100 pb-3"><i class="fa-solid fa-puzzle-piece"></i> 5. Bentuk $\frac{0}{0}$ dengan Identitas Trigonometri</h3>
+<p class="text-slate-700 text-sm leading-relaxed">Pada $f(x) = \dfrac{1-\cos x}{x^2}$, substitusi $x = 0$ memberi $\frac{0}{0}$. Kita ubah bentuknya dengan identitas.</p>
+<h4 class="font-bold text-amber-700">Langkah 1: Tabel nilai</h4>
+<div class="overflow-x-auto rounded-xl border border-slate-200"><table class="w-full text-center text-xs sm:text-sm bg-white"><thead class="bg-amber-50 text-amber-800"><tr><th class="py-2 px-3">$x$ (kiri)</th><th class="py-2 px-3">$\dfrac{1-\cos x}{x^2}$</th><th class="py-2 px-3">$x$ (kanan)</th><th class="py-2 px-3">$\dfrac{1-\cos x}{x^2}$</th></tr></thead><tbody class="divide-y divide-slate-100 text-slate-700"><tr><td class="py-2 px-3">&minus;0,100</td><td class="py-2 px-3">0,49958347</td><td class="py-2 px-3">0,100</td><td class="py-2 px-3">0,49958347</td></tr><tr><td class="py-2 px-3">&minus;0,010</td><td class="py-2 px-3">0,49999583</td><td class="py-2 px-3">0,010</td><td class="py-2 px-3">0,49999583</td></tr><tr><td class="py-2 px-3">&minus;0,001</td><td class="py-2 px-3">0,49999996</td><td class="py-2 px-3">0,001</td><td class="py-2 px-3">0,49999996</td></tr><tr class="font-bold text-emerald-700"><td class="py-2 px-3">$\to 0^-$</td><td class="py-2 px-3">$\to 0{,}5$</td><td class="py-2 px-3">$\to 0^+$</td><td class="py-2 px-3">$\to 0{,}5$</td></tr></tbody></table></div>
+<h4 class="font-bold text-amber-700">Langkah 2: Pakai identitas</h4>
+<div class="p-4 bg-amber-50 rounded-xl border border-amber-100 text-sm text-slate-700 leading-relaxed space-y-2"><p>Identitas sudut ganda: $1 - \cos x = 2\sin^2\dfrac{x}{2}$. Maka</p><div class="text-center overflow-x-auto">$$ \frac{1-\cos x}{x^2} = \frac{2\sin^2\frac{x}{2}}{x^2} = \frac{1}{2}\left(\frac{\sin\frac{x}{2}}{\frac{x}{2}}\right)^2 \to \frac{1}{2}\cdot 1^2 = \frac{1}{2} $$</div></div>
+<div class="p-4 bg-white rounded-xl border border-slate-200 shadow-sm space-y-2"><h4 class="font-bold text-slate-800 text-sm"><i class="fa-solid fa-pencil text-amber-600 mr-1"></i>Contoh Soal</h4><p class="text-sm text-slate-700">Tentukan $\lim_{x\to 0}\dfrac{1-\cos 2x}{x^2}$.</p><p class="text-sm text-slate-700">$1-\cos 2x = 2\sin^2 x$, sehingga $\dfrac{2\sin^2 x}{x^2} = 2\left(\dfrac{\sin x}{x}\right)^2 \to 2$.</p></div>
+<button type="button" onclick="toggleReveal('mx-p5', this)" aria-expanded="false" class="px-3 py-2 rounded-lg bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold shadow-sm active:scale-95"><i class="fa-solid fa-eye mr-1"></i>Lihat strategi umum</button>
+<div id="mx-p5" class="hidden space-y-2"><ul class="list-disc list-inside text-sm text-slate-700 space-y-1 ml-2 bg-slate-100 p-3 rounded-lg"><li>Substitusi dulu. Bila hasilnya $\frac{0}{0}$, ubah bentuk.</li><li>Gunakan identitas: $1-\cos x = 2\sin^2\frac{x}{2}$, $\tan x = \frac{\sin x}{\cos x}$.</li><li>Munculkan pola $\frac{\sin u}{u}$ atau $\frac{\tan u}{u}$ dengan $u \to 0$, lalu pakai limit spesial.</li></ul></div>
+<button type="button" onclick="tryInLab('trig_cos_transform', 0)" class="px-3 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-sm active:scale-95"><i class="fa-solid fa-flask mr-1.5"></i>Coba di Lab: $\frac{1-\cos x}{x^2}$ untuk $x \to 0$</button>
+</div>
+<div id="materi-page-6" class="materi-page hidden glass-panel p-6 sm:p-8 rounded-2xl border-l-4 border-l-rose-500 space-y-4">
+<h3 class="text-xl font-black text-rose-700 flex items-center gap-2 border-b border-slate-100 pb-3"><i class="fa-solid fa-arrows-up-down"></i> 6. Limit Tak Hingga dan Asimptot Tangen</h3>
+<p class="text-slate-700 text-sm leading-relaxed">Fungsi $\tan x = \dfrac{\sin x}{\cos x}$ tidak terdefinisi di mana $\cos x = 0$, yaitu $x = \frac{\pi}{2} + n\pi$. Apa yang terjadi di dekat titik itu?</p>
+<h4 class="font-bold text-rose-700">Langkah 1: Tabel nilai di sekitar $x = \frac{\pi}{2}$</h4>
+<div class="overflow-x-auto rounded-xl border border-slate-200"><table class="w-full text-center text-xs sm:text-sm bg-white"><thead class="bg-rose-50 text-rose-800"><tr><th class="py-2 px-3">$x$ (kiri)</th><th class="py-2 px-3">$\tan x$</th><th class="py-2 px-3">$x$ (kanan)</th><th class="py-2 px-3">$\tan x$</th></tr></thead><tbody class="divide-y divide-slate-100 text-slate-700"><tr><td class="py-2 px-3">1,4708</td><td class="py-2 px-3">9,9666</td><td class="py-2 px-3">1,6708</td><td class="py-2 px-3">&minus;9,9666</td></tr><tr><td class="py-2 px-3">1,5608</td><td class="py-2 px-3">99,9967</td><td class="py-2 px-3">1,5808</td><td class="py-2 px-3">&minus;99,9967</td></tr><tr><td class="py-2 px-3">1,5698</td><td class="py-2 px-3">999,9997</td><td class="py-2 px-3">1,5718</td><td class="py-2 px-3">&minus;999,9997</td></tr><tr class="font-bold text-emerald-700"><td class="py-2 px-3">$\to \frac{\pi}{2}^-$</td><td class="py-2 px-3">$\to +\infty$</td><td class="py-2 px-3">$\to \frac{\pi}{2}^+$</td><td class="py-2 px-3">$\to -\infty$</td></tr></tbody></table></div>
+<div class="p-4 bg-rose-50 rounded-xl border border-rose-100 text-sm text-slate-700 leading-relaxed space-y-1"><p>Dekat $\frac{\pi}{2}$: $\sin x \to 1$ dan $\cos x \to 0$. Dari kiri $\cos x$ positif kecil, jadi $\tan x \to +\infty$. Dari kanan $\cos x$ negatif kecil, jadi $\tan x \to -\infty$. Karena berlawanan, limitnya <strong>tidak ada</strong> dan garis $x = \frac{\pi}{2}$ adalah <strong>asimptot vertikal</strong>.</p></div>
+<div class="p-4 bg-white rounded-xl border border-slate-200 shadow-sm space-y-2"><h4 class="font-bold text-slate-800 text-sm"><i class="fa-solid fa-pencil text-rose-600 mr-1"></i>Contoh Soal</h4><p class="text-sm text-slate-700">Tentukan $\lim_{x\to \frac{\pi}{2}^-} \sec x$, dengan $\sec x = \dfrac{1}{\cos x}$.</p><p class="text-sm text-slate-700">Dari kiri $\cos x \to 0^+$, sehingga $\sec x \to +\infty$. Dari kanan hasilnya $-\infty$, jadi $\lim_{x\to \frac{\pi}{2}} \sec x$ tidak ada.</p></div>
+<button type="button" onclick="toggleReveal('mx-p6', this)" aria-expanded="false" class="px-3 py-2 rounded-lg bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold shadow-sm active:scale-95"><i class="fa-solid fa-eye mr-1"></i>Lihat kaidah</button>
+<div id="mx-p6" class="hidden space-y-2"><p class="text-xs bg-slate-100 p-3 rounded-lg text-slate-700 leading-relaxed">Bila penyebut $\to 0$ sedangkan pembilang menuju bilangan tak nol, hasilnya $\pm\infty$. Tanda ditentukan oleh tanda penyebut di sisi yang didekati. Asimptot $\tan x$ dan $\sec x$ berulang tiap $\pi$ dan $2\pi$.</p></div>
+<button type="button" onclick="tryInLab('trig_tan_asy', 6)" class="px-3 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-sm active:scale-95"><i class="fa-solid fa-flask mr-1.5"></i>Coba di Lab: asimptot $\tan x$ di $x = \frac{\pi}{2}$</button>
+</div>
+<div id="materi-page-7" class="materi-page hidden glass-panel p-6 sm:p-8 rounded-2xl border-l-4 border-l-indigo-500 space-y-4">
+<h3 class="text-xl font-black text-indigo-700 flex items-center gap-2 border-b border-slate-100 pb-3"><i class="fa-solid fa-compress"></i> 7. Teorema Apit (Squeeze) pada Limit Trigonometri</h3>
+<p class="text-slate-700 text-sm leading-relaxed">Bila $g(x) \le f(x) \le h(x)$ di sekitar $a$ dan $\lim_{x\to a} g(x) = \lim_{x\to a} h(x) = L$, maka $\lim_{x\to a} f(x) = L$.</p>
+<h4 class="font-bold text-indigo-700">Penerapan: $\cos x \le \frac{\sin x}{x} \le 1$</h4>
+<div class="overflow-x-auto rounded-xl border border-slate-200"><table class="w-full text-center text-xs sm:text-sm bg-white"><thead class="bg-indigo-50 text-indigo-800"><tr><th class="py-2 px-3">$x$</th><th class="py-2 px-3">$\cos x$</th><th class="py-2 px-3">$\dfrac{\sin x}{x}$</th><th class="py-2 px-3">$1$</th></tr></thead><tbody class="divide-y divide-slate-100 text-slate-700"><tr><td class="py-2 px-3">0,100</td><td class="py-2 px-3">0,9950042</td><td class="py-2 px-3">0,9983342</td><td class="py-2 px-3">1</td></tr><tr><td class="py-2 px-3">0,010</td><td class="py-2 px-3">0,9999500</td><td class="py-2 px-3">0,9999833</td><td class="py-2 px-3">1</td></tr><tr><td class="py-2 px-3">0,001</td><td class="py-2 px-3">0,9999995</td><td class="py-2 px-3">0,9999998</td><td class="py-2 px-3">1</td></tr><tr class="font-bold text-emerald-700"><td class="py-2 px-3">$\to 0^+$</td><td class="py-2 px-3">$\to 1$</td><td class="py-2 px-3">$\to 1$</td><td class="py-2 px-3">$1$</td></tr></tbody></table></div>
+<div class="p-4 bg-white rounded-xl border border-slate-200 shadow-sm space-y-2"><h4 class="font-bold text-slate-800 text-sm"><i class="fa-solid fa-pencil text-indigo-600 mr-1"></i>Contoh Soal</h4><p class="text-sm text-slate-700">Tentukan $\lim_{x\to 0} x\sin\dfrac{1}{x}$.</p><p class="text-sm text-slate-700">Karena $-1 \le \sin\frac{1}{x} \le 1$, maka $-|x| \le x\sin\frac{1}{x} \le |x|$. Kedua batas menuju $0$, jadi limitnya $0$.</p></div>
+<button type="button" onclick="toggleReveal('mx-p7', this)" aria-expanded="false" class="px-3 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-sm active:scale-95"><i class="fa-solid fa-eye mr-1"></i>Lihat ringkasan limit trigonometri</button>
+<div id="mx-p7" class="hidden space-y-3"><ul class="list-disc list-inside text-sm text-slate-700 space-y-1 ml-2 bg-slate-100 p-3 rounded-lg"><li>$\lim_{x\to 0}\frac{\sin x}{x} = \lim_{x\to 0}\frac{\tan x}{x} = 1$ (radian).</li><li>$\lim_{x\to 0}\frac{\sin ax}{bx} = \lim_{x\to 0}\frac{\tan ax}{bx} = \frac{a}{b}$.</li><li>$\lim_{x\to 0}\frac{1-\cos x}{x^2} = \frac{1}{2}$.</li><li>Fungsi trigonometri kontinu di domainnya: $\lim_{x\to a}\sin x = \sin a$.</li><li>$\tan x$ dan $\sec x$ menuju $\pm\infty$ di $x = \frac{\pi}{2} + n\pi$ (Halaman 6).</li></ul></div>
+<button type="button" onclick="tryInLab('trig_fundamental_sin', 0)" class="px-3 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-sm active:scale-95"><i class="fa-solid fa-flask mr-1.5"></i>Coba di Lab: terapit $\frac{\sin x}{x}$</button>
+</div>
+</div>
+
+<div class="fixed bottom-0 left-0 right-0 p-4 bg-white/90 backdrop-blur border-t border-slate-200 z-20 flex justify-center">
+        <div class="flex items-center justify-between w-full max-w-3xl px-4">
+          <button id="btn-prev-materi" onclick="prevMateri()" class="px-4 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-sm disabled:opacity-50 disabled:cursor-not-allowed transition-all"><i class="fa-solid fa-chevron-left mr-1"></i> Sebelumnya</button>
+          <span id="materi-page-indicator" class="font-bold text-slate-500 text-sm tracking-widest">1 / 7</span>
+          <button id="btn-next-materi" onclick="nextMateri()" class="px-4 py-2 rounded-lg bg-sky-600 hover:bg-sky-700 text-white font-bold text-sm disabled:opacity-50 disabled:cursor-not-allowed shadow-md transition-all">Selanjutnya <i class="fa-solid fa-chevron-right ml-1"></i></button>
+        </div>
+      </div>
+    </main>
+
+    <!-- TAB: EVALUASI -->
+    <main id="tab-evaluasi" class="tab-page hidden flex-1 overflow-y-auto p-4 sm:p-8 bg-slate-50 relative">
+      <div class="max-w-2xl mx-auto space-y-6 pb-8">
+        <div class="text-center space-y-2 border-b border-slate-200 pb-4">
+          <h2 class="text-2xl font-black text-slate-900">Evaluasi Pemahaman Limit Trigonometri</h2>
+          <p class="text-slate-500 text-sm font-medium">12 soal: pilihan ganda, isian, pilihan ganda kompleks, benar/salah, dan menjodohkan</p>
+        </div>
+
+        <section id="eval-intro" class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-5">
+          <div class="space-y-1">
+            <h3 class="font-black text-lg text-slate-800"><i class="fa-solid fa-id-card text-sky-600 mr-2"></i>Identitas Peserta</h3>
+            <p class="text-sm text-slate-500">Isi identitas sebelum memulai. Data ini hanya dipakai untuk rekap dan berkas PDF, serta tidak dikirim ke mana pun.</p>
+          </div>
+          <div class="space-y-3">
+            <label class="block text-sm font-bold text-slate-700">Nama Lengkap <span class="text-rose-500">*</span>
+              <input id="eval-nama" type="text" maxlength="60" autocomplete="off" placeholder="mis. Made Agus" class="mt-1 w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-sky-500"></label>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <label class="block text-sm font-bold text-slate-700">Kelas
+                <input id="eval-kelas" type="text" maxlength="30" autocomplete="off" placeholder="mis. XI 2" class="mt-1 w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-sky-500"></label>
+              <label class="block text-sm font-bold text-slate-700">Asal Sekolah
+                <input id="eval-sekolah" type="text" maxlength="60" autocomplete="off" placeholder="mis. SMAN 2 Kuta" class="mt-1 w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-sky-500"></label>
+            </div>
+          </div>
+          <p id="eval-intro-error" class="hidden text-xs font-bold text-rose-600"></p>
+          <div class="p-3 rounded-xl bg-sky-50 border border-sky-200 text-xs text-sky-900 leading-relaxed"><strong>Cara mengerjakan:</strong> soal tampil satu per satu. Tekan <strong>Kirim Jawaban</strong> pada setiap soal untuk mengunci jawaban dan melihat pembahasannya. Di akhir, kamu mendapat rekap nilai yang bisa diunduh sebagai PDF.</div>
+          <button onclick="startEvaluation()" class="w-full py-3 rounded-xl bg-gradient-to-r from-teal-500 to-emerald-600 hover:from-teal-600 hover:to-emerald-700 text-white font-bold text-sm shadow-md active:scale-95 transition-all"><i class="fa-solid fa-play mr-2"></i>Mulai Evaluasi</button>
+        </section>
+
+        <section id="eval-quiz" class="hidden space-y-4 pb-24">
+          <div class="flex flex-wrap items-center justify-between gap-2 text-xs font-bold">
+            <span id="eval-student-chip" class="px-3 py-1.5 rounded-full bg-slate-100 text-slate-700"></span>
+            <span id="eval-progress-text" class="text-slate-500"></span>
+          </div>
+          <div id="eval-chips" class="flex flex-wrap gap-1.5"></div>
+          <div id="quiz-container" class="space-y-6"></div>
+          <div id="eval-confirm" class="hidden p-4 rounded-xl bg-amber-50 border border-amber-300 text-sm text-amber-900 space-y-3">
+            <p id="eval-confirm-text" class="font-bold"></p>
+            <div class="flex flex-wrap gap-2">
+              <button onclick="goToFirstUnsent()" class="px-4 py-2 rounded-lg bg-white border border-amber-400 text-amber-800 font-bold text-xs hover:bg-amber-100">Kembali ke soal</button>
+              <button onclick="showRecap()" class="px-4 py-2 rounded-lg bg-amber-600 text-white font-bold text-xs hover:bg-amber-700">Tetap lihat rekap</button>
+            </div>
+          </div>
+        </section>
+
+        <section id="eval-recap" class="hidden space-y-5 pb-8">
+          <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+            <div class="flex items-start justify-between gap-4 flex-wrap">
+              <div class="space-y-1 text-sm">
+                <h3 class="font-black text-lg text-slate-800"><i class="fa-solid fa-clipboard-check text-emerald-600 mr-2"></i>Rekapitulasi Hasil</h3>
+                <p class="text-slate-600"><span class="font-bold text-slate-700">Nama:</span> <span id="rc-nama"></span></p>
+                <p class="text-slate-600"><span class="font-bold text-slate-700">Kelas:</span> <span id="rc-kelas"></span></p>
+                <p class="text-slate-600"><span class="font-bold text-slate-700">Asal Sekolah:</span> <span id="rc-sekolah"></span></p>
+                <p class="text-slate-600"><span class="font-bold text-slate-700">Tanggal:</span> <span id="rc-tanggal"></span></p>
+              </div>
+              <div class="px-6 py-4 rounded-2xl bg-sky-50 border border-sky-200 text-center">
+                <p class="text-[11px] font-black text-sky-700 uppercase tracking-wide">Skor Akhir</p>
+                <p class="text-4xl font-black text-sky-600"><span id="rc-skor">0</span><span class="text-lg text-sky-400"> / 100</span></p>
+              </div>
+            </div>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center text-xs font-bold">
+              <div class="p-2 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-800">Benar<br><span id="rc-n-benar" class="text-lg">0</span></div>
+              <div class="p-2 rounded-lg bg-amber-50 border border-amber-200 text-amber-800">Sebagian<br><span id="rc-n-sebagian" class="text-lg">0</span></div>
+              <div class="p-2 rounded-lg bg-rose-50 border border-rose-200 text-rose-800">Salah<br><span id="rc-n-salah" class="text-lg">0</span></div>
+              <div class="p-2 rounded-lg bg-slate-50 border border-slate-200 text-slate-600">Belum dikirim<br><span id="rc-n-none" class="text-lg">0</span></div>
+            </div>
+          </div>
+          <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs sm:text-sm">
+                <thead class="bg-slate-100 text-slate-600"><tr><th class="py-2.5 px-3 font-bold">No</th><th class="py-2.5 px-3 font-bold">Tipe</th><th class="py-2.5 px-3 font-bold">Topik</th><th class="py-2.5 px-3 font-bold">Status</th><th class="py-2.5 px-3 font-bold text-right">Poin</th></tr></thead>
+                <tbody id="rc-body" class="divide-y divide-slate-100 text-slate-700 font-medium"></tbody>
+              </table>
+            </div>
+          </div>
+          <p class="text-[11px] text-slate-500 leading-relaxed">Soal benar/salah dan menjodohkan dinilai parsial sesuai jumlah butir yang benar. Pilihan ganda kompleks harus tepat seluruhnya.</p>
+          <p id="recap-notice" class="hidden p-3 rounded-xl bg-rose-50 border border-rose-200 text-xs font-bold text-rose-800"></p>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <button onclick="downloadRecapPdf()" class="py-3 rounded-xl bg-gradient-to-r from-sky-600 to-indigo-600 hover:from-sky-700 hover:to-indigo-700 text-white font-bold text-sm shadow-md active:scale-95 transition-all"><i class="fa-solid fa-file-pdf mr-2"></i>Unduh Rekap (PDF)</button>
+            <button onclick="printPembahasan()" class="py-3 rounded-xl bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 font-bold text-sm active:scale-95 transition-all"><i class="fa-solid fa-print mr-2"></i>Cetak Pembahasan Lengkap</button>
+            <button onclick="reviewQuestions()" class="py-3 rounded-xl bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 font-bold text-sm active:scale-95 transition-all"><i class="fa-solid fa-magnifying-glass mr-2"></i>Tinjau Soal</button>
+            <button onclick="retryEvaluation()" class="py-3 rounded-xl bg-gradient-to-r from-teal-500 to-emerald-600 hover:from-teal-600 hover:to-emerald-700 text-white font-bold text-sm shadow-md active:scale-95 transition-all"><i class="fa-solid fa-rotate-right mr-2"></i>Kerjakan Evaluasi Kembali</button>
+          </div>
+        </section>
+      </div>
+
+      <div id="eval-nav" class="hidden fixed bottom-0 left-0 right-0 p-4 bg-white/90 backdrop-blur border-t border-slate-200 z-20 justify-center">
+        <div class="flex items-center justify-between w-full max-w-2xl px-4">
+          <button id="eval-prev" onclick="evalPrev()" class="px-4 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-sm disabled:opacity-50 disabled:cursor-not-allowed transition-all"><i class="fa-solid fa-chevron-left mr-1"></i> Sebelumnya</button>
+          <span id="eval-page-indicator" class="font-bold text-slate-500 text-sm tracking-widest">1 / 12</span>
+          <button id="eval-next" onclick="evalNext()" class="px-4 py-2 rounded-lg bg-sky-600 hover:bg-sky-700 text-white font-bold text-sm disabled:opacity-50 disabled:cursor-not-allowed shadow-md transition-all">Selanjutnya <i class="fa-solid fa-chevron-right ml-1"></i></button>
+        </div>
+      </div>
+    </main>
+
+    <!-- TAB: REFLEKSI -->
+    <main id="tab-refleksi" class="tab-page hidden flex-1 overflow-y-auto p-4 sm:p-8 bg-slate-50">
+      <div class="max-w-2xl mx-auto space-y-6 pb-8">
+        <div class="text-center space-y-2 border-b border-slate-200 pb-4">
+          <h2 class="text-2xl font-black text-slate-900">Refleksi Pembelajaran</h2>
+          <p class="text-slate-500 text-sm font-medium">Jawab pertanyaan reflektif untuk menyimpulkan pengalaman penemuan kamu</p>
+        </div>
+        <form id="reflection-form" onsubmit="saveReflection(event)" class="glass-panel p-6 sm:p-8 rounded-2xl space-y-6">
+          <div class="space-y-2">
+            <label class="block text-sm font-bold text-sky-700 tracking-wide">1. Mengapa sudut harus diukur dalam <strong>radian</strong> pada limit trigonometri? Apa yang terjadi pada $\frac{\sin x}{x}$ bila kalkulator berada pada mode derajat?</label>
+            <textarea id="ref-q1" rows="3" required class="w-full bg-white border border-slate-300 rounded-xl p-4 text-sm font-medium text-slate-700 focus:border-sky-500 focus:ring-1 focus:ring-sky-500 focus:outline-none shadow-inner" placeholder="Petunjuk: ingat nilai 0,0175 pada diagnostik Lab..."></textarea>
+          </div>
+          <div class="space-y-2">
+            <label class="block text-sm font-bold text-teal-700 tracking-wide">2. Pada $\frac{\sin x}{x}$, nilai $f(0)$ tidak terdefinisi tetapi limitnya ada. Jelaskan mengapa, dan apa yang kamu lihat pada animasi dua pelacak!</label>
+            <textarea id="ref-q2" rows="3" required class="w-full bg-white border border-slate-300 rounded-xl p-4 text-sm font-medium text-slate-700 focus:border-teal-500 focus:ring-1 focus:ring-teal-500 focus:outline-none shadow-inner" placeholder="Tuliskan pemahamanmu..."></textarea>
+          </div>
+          <div class="space-y-2">
+            <label class="block text-sm font-bold text-amber-600 tracking-wide">3. Bagaimana kamu menentukan limit bentuk $\frac{0}{0}$ pada fungsi trigonometri dan limit $\tan x$ di $\frac{\pi}{2}$ tanpa tabel? Jelaskan langkah-langkahmu.</label>
+            <textarea id="ref-q3" rows="3" required class="w-full bg-white border border-slate-300 rounded-xl p-4 text-sm font-medium text-slate-700 focus:border-amber-500 focus:ring-1 focus:ring-amber-500 focus:outline-none shadow-inner" placeholder="Tuliskan strategimu (identitas, limit spesial, tanda cos x, dst.)..."></textarea>
+          </div>
+          <button type="submit" class="w-full py-3.5 rounded-xl bg-slate-800 hover:bg-slate-900 text-white font-bold text-sm shadow-md active:scale-95 transition-all flex items-center justify-center gap-2"><i class="fa-solid fa-floppy-disk"></i> Simpan Laporan Refleksi Metakognitif</button>
+        </form>
+        <div id="reflection-saved-msg" class="hidden p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm text-center font-bold shadow-sm"><i class="fa-solid fa-circle-check mr-2 text-emerald-600"></i>Refleksi berhasil disimpan ke memori lokal peramban! Terima kasih atas partisipasi aktifmu.</div>
+      </div>
+    </main>
+  </div>
+
+  <!-- MODAL INFO -->
+  <div id="info-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+    <div class="bg-white max-w-lg w-full p-6 sm:p-8 rounded-3xl space-y-4 border border-slate-200 shadow-2xl relative">
+      <button onclick="closeModal('info-modal')" class="absolute top-5 right-5 text-slate-400 hover:text-slate-700 text-xl transition-colors" aria-label="Tutup"><i class="fa-solid fa-xmark"></i></button>
+      <div class="flex items-center gap-4 border-b border-slate-100 pb-4">
+        <div class="w-12 h-12 rounded-2xl bg-sky-100 text-sky-600 flex items-center justify-center text-2xl shadow-inner"><i class="fa-solid fa-flask"></i></div>
+        <div><h3 class="font-black text-lg text-slate-900">Tentang TrigoLimitLab</h3><p class="text-sm font-medium text-slate-500">Laboratorium Maya Limit Fungsi Trigonometri</p></div>
+      </div>
+      <div class="text-sm text-slate-600 space-y-4 leading-relaxed">
+        <p><strong>TrigoLimitLab</strong> adalah media pembelajaran berbasis web interaktif dengan pendekatan <em>Guided Discovery Learning</em> (Penemuan Terbimbing).</p>
+        <p>Siswa bertindak sebagai &ldquo;peneliti&rdquo; yang mengamati nilai $f(x)$ saat $x$ mendekati $a$ dari kiri dan kanan, lalu merumuskan sendiri limit kiri, limit kanan, dan eksistensi limit, mulai dari fungsi sinus yang kontinu, limit fundamental $\frac{\sin x}{x}$ dan $\frac{\tan x}{x}$, bentuk $\frac{0}{0}$, fungsi terpotong, hingga asimptot tangen. Seluruh sudut memakai <strong>radian</strong>.</p>
+        <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-1">
+          <p class="font-bold text-sky-700 text-xs uppercase tracking-wider mb-2">Pengembang Media &amp; Desainer:</p>
+          <p class="text-slate-900 font-black text-base">I Made Agus Suputrayasa</p>
+          <p class="text-slate-500 text-xs font-medium">Guru Matematika</p>
+        </div>
+      </div>
+      <button onclick="closeModal('info-modal')" class="w-full py-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-sm transition-colors border border-slate-300">Tutup</button>
+    </div>
+  </div>
+
+  <!-- MODAL PANDUAN -->
+  <div id="guide-modal" role="dialog" aria-modal="true" aria-labelledby="guide-title" class="hidden fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-900/60 backdrop-blur-sm">
+    <div class="bg-white max-w-2xl w-full rounded-3xl border border-slate-200 shadow-2xl flex flex-col max-h-[92vh] overflow-hidden">
+      <div class="flex items-center gap-4 px-5 sm:px-7 py-4 border-b border-slate-100 shrink-0">
+        <div class="w-12 h-12 rounded-2xl bg-teal-100 text-teal-600 flex items-center justify-center text-2xl shadow-inner shrink-0"><i class="fa-solid fa-compass"></i></div>
+        <div class="flex-1 min-w-0"><h3 id="guide-title" class="font-black text-lg text-slate-900 leading-tight">Panduan Eksplorasi Lab Maya</h3><p class="text-sm font-medium text-slate-500">Langkah Penemuan Terbimbing: Amati, Prediksi, Uji, Kesimpulan</p></div>
+        <button onclick="closeModal('guide-modal')" class="w-9 h-9 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 text-xl transition-colors shrink-0" aria-label="Tutup panduan"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="overflow-y-auto px-5 sm:px-7 py-4 space-y-3 text-sm font-medium text-slate-700 leading-relaxed">
+        <div class="p-3 rounded-xl bg-sky-50 border border-sky-200 text-xs text-sky-900 leading-relaxed"><strong>Alur belajar yang disarankan:</strong> baca <em>Materi</em> &rarr; temukan polanya di <em>Lab Maya</em> &rarr; kerjakan <em>Evaluasi</em> &rarr; tulis <em>Refleksi</em>.</div>
+
+        <details open class="group rounded-2xl border border-slate-200 bg-slate-50">
+          <summary class="flex items-center gap-2 px-4 py-3 cursor-pointer font-black text-slate-800"><span class="w-7 h-7 rounded-full bg-sky-600 text-white text-xs flex items-center justify-center shrink-0">1</span><span class="flex-1">Empat langkah penemuan di Lab Maya</span><i class="fa-solid fa-chevron-down text-slate-400 text-xs transition-transform group-open:rotate-180"></i></summary>
+          <div class="px-4 pb-4 space-y-3">
+            <p class="text-xs text-slate-500">Di layar HP, pindah ke tab <strong>Kontrol &amp; Tabel</strong> untuk panel langkah dan ke <strong>Canvas Visual</strong> untuk melihat grafik.</p>
+            <ol class="space-y-2">
+              <li class="p-3 rounded-xl bg-white border border-slate-200"><p class="font-black text-sky-700">Langkah 1 &middot; Amati</p><p>Pilih fungsi dan nilai $a$. Baca <strong>Tabel Pendekatan Nilai</strong>: ke mana $f(x)$ menuju dari kiri dan dari kanan? Geser penggeser Δx di bawah kanvas dan perhatikan dua pelacak.</p></li>
+              <li class="p-3 rounded-xl bg-white border border-slate-200"><p class="font-black text-amber-700">Langkah 2 &middot; Prediksi</p><p>Isi limit kiri $L_1$, limit kanan $L_2$, pilih <em>Ada / Tidak Ada</em>, lalu isi nilai limit keseluruhan (angka atau &ldquo;tidak ada&rdquo;).</p></li>
+              <li class="p-3 rounded-xl bg-white border border-slate-200"><p class="font-black text-emerald-700">Langkah 3 &middot; Uji</p><p>Tekan <strong>Uji Hipotesis</strong>. Prediksimu muncul sebagai belah ketupat oranye pada garis $x=a$. Hijau = benar, kuning = hampir benar (mis. tanda terbalik), merah = salah. Sistem juga mendiagnosis kekeliruan umum, misalnya tertukar antara $f(a)$ dan limit, atau memakai mode derajat alih-alih radian.</p></li>
+              <li class="p-3 rounded-xl bg-white border border-slate-200"><p class="font-black text-purple-700">Langkah 4 &middot; Animasi &amp; Kesimpulan</p><p>Tekan <strong>Jalankan Pendekatan</strong>. Bila kedua pelacak bertemu di tinggi yang sama, limit ada; bila berbeda atau melesat tanpa batas, limit tidak ada.</p></li>
+            </ol>
+            <p class="text-xs text-slate-600">Mengubah $a$ menghapus umpan balik lama (isianmu tetap). Mengganti fungsi memulai lagi dari Langkah 1 dengan isian kosong.</p>
+          </div>
+        </details>
+
+        <details class="group rounded-2xl border border-slate-200 bg-slate-50">
+          <summary class="flex items-center gap-2 px-4 py-3 cursor-pointer font-black text-slate-800"><span class="w-7 h-7 rounded-full bg-teal-600 text-white text-xs flex items-center justify-center shrink-0">2</span><span class="flex-1">Memilih fungsi, nilai $a$, dan mengoperasikan kanvas</span><i class="fa-solid fa-chevron-down text-slate-400 text-xs transition-transform group-open:rotate-180"></i></summary>
+          <div class="px-4 pb-4 space-y-2 text-xs text-slate-600">
+            <ul class="list-disc list-inside space-y-1 ml-1">
+              <li><strong>Fungsi:</strong> $\sin x$ (kontinu), $\frac{\sin x}{x}$, $\frac{\tan x}{x}$, $\frac{1-\cos x}{x^2}$ (semuanya berlubang di $0$), fungsi terpotong sinus/kosinus (melompat), dan $\tan x$ (asimptot).</li>
+              <li><strong>Nilai $a$:</strong> geser slider ($-2\pi$ sampai $2\pi$, kelipatan $\frac{\pi}{12}$), tekan tombol preset ($0, \frac{\pi}{6}, \frac{\pi}{4}, \frac{\pi}{2}, \pi$), atau seret <strong>titik oranye</strong> pada sumbu X.</li>
+              <li><strong>Seret ruang kosong</strong> untuk menggeser kanvas. Zoom dengan tombol + / &minus; atau roda mouse; tombol <i class="fa-solid fa-crosshairs"></i> memusatkan pandangan pada $x = a$.</li>
+              <li><strong>Lingkaran kosong</strong> = titik tidak termasuk grafik. <strong>Lingkaran terisi</strong> = nilai fungsi sebenarnya.</li>
+            </ul>
+          </div>
+        </details>
+
+        <details class="group rounded-2xl border border-slate-200 bg-slate-50">
+          <summary class="flex items-center gap-2 px-4 py-3 cursor-pointer font-black text-slate-800"><span class="w-7 h-7 rounded-full bg-amber-500 text-white text-xs flex items-center justify-center shrink-0">3</span><span class="flex-1">Mengisi hipotesis dengan benar</span><i class="fa-solid fa-chevron-down text-slate-400 text-xs transition-transform group-open:rotate-180"></i></summary>
+          <div class="px-4 pb-4 space-y-2 text-xs text-slate-600">
+            <ul class="list-disc list-inside space-y-1 ml-1">
+              <li>Angka boleh ditulis desimal (0,5), pecahan (1/2), atau memakai <strong>π</strong> (mis. π/2). Untuk limit tak hingga tulis <strong>∞</strong> atau <strong>−∞</strong> (ada tombol pintas).</li>
+              <li>Kotak limit keseluruhan diisi angka bila limit ada, atau <strong>tidak ada</strong> bila $L_1 \ne L_2$.</li>
+              <li>Nilai $f(a)$ <strong>bukan</strong> limit. Limit hanya melihat nilai $f$ di sekitar $a$.</li>
+            </ul>
+          </div>
+        </details>
+
+        <details class="group rounded-2xl border border-slate-200 bg-slate-50">
+          <summary class="flex items-center gap-2 px-4 py-3 cursor-pointer font-black text-slate-800"><span class="w-7 h-7 rounded-full bg-purple-600 text-white text-xs flex items-center justify-center shrink-0">4</span><span class="flex-1">Pelacak, penggeser Δx, dan animasi</span><i class="fa-solid fa-chevron-down text-slate-400 text-xs transition-transform group-open:rotate-180"></i></summary>
+          <div class="px-4 pb-4 space-y-2 text-xs text-slate-600">
+            <ul class="list-disc list-inside space-y-1 ml-1">
+              <li><strong>Pelacak biru</strong> berada di $x = a - \Delta x$, <strong>pelacak hijau</strong> di $x = a + \Delta x$. Koordinatnya tampil pada kotak info.</li>
+              <li><strong>Penggeser Δx</strong> mengatur kedekatan dari $1$ hingga $0{,}001$ (skala logaritmik).</li>
+              <li><strong>Jeda / Lanjutkan / Ulangi</strong>, kecepatan 0,5&times; / 1&times; / 2&times;, serta kotak <strong>Jejak</strong> untuk melihat lintasan pelacak. Bila perangkat memakai &ldquo;kurangi gerakan&rdquo;, animasi tidak jalan otomatis: geser penggeser sendiri.</li>
+              <li>Setelah mencapai Δx terkecil, titik tinggi $L_1$ dan $L_2$ ditandai pada garis $x = a$.</li>
+            </ul>
+          </div>
+        </details>
+
+        <details class="group rounded-2xl border border-slate-200 bg-slate-50">
+          <summary class="flex items-center gap-2 px-4 py-3 cursor-pointer font-black text-slate-800"><span class="w-7 h-7 rounded-full bg-amber-500 text-white text-xs flex items-center justify-center shrink-0"><i class="fa-solid fa-lightbulb"></i></span><span class="flex-1">Asisten Penemuan (petunjuk bertingkat)</span><i class="fa-solid fa-chevron-down text-slate-400 text-xs transition-transform group-open:rotate-180"></i></summary>
+          <div class="px-4 pb-4 space-y-2 text-xs text-slate-600">
+            <p>Buka lewat tombol <strong>Asisten Penemuan</strong> di kiri bawah kanvas. <strong>Petunjuk 1</strong> memberi arahan pengamatan, <strong>Petunjuk 2</strong> memberi bentuk penyelesaiannya (menyesuaikan fungsi dan $a$). Tab <strong>Notasi</strong> menjelaskan simbol limit. Di komputer jendela dapat digeser lewat judulnya; di HP muncul dari bawah dan dapat diseret ke bawah untuk menutup. Esc menutupnya.</p>
+          </div>
+        </details>
+
+        <details class="group rounded-2xl border border-slate-200 bg-slate-50">
+          <summary class="flex items-center gap-2 px-4 py-3 cursor-pointer font-black text-slate-800"><span class="w-7 h-7 rounded-full bg-emerald-600 text-white text-xs flex items-center justify-center shrink-0"><i class="fa-solid fa-pen-ruler"></i></span><span class="flex-1">Materi, Evaluasi, dan Refleksi</span><i class="fa-solid fa-chevron-down text-slate-400 text-xs transition-transform group-open:rotate-180"></i></summary>
+          <div class="px-4 pb-4 space-y-2 text-xs text-slate-600">
+            <ul class="list-disc list-inside space-y-1 ml-1">
+              <li><strong>Materi</strong> (7 halaman) memakai alur Tabel &rarr; Grafik/Rumus &rarr; Definisi. Tombol <strong>Coba di Lab</strong> mengatur fungsi dan $a$ otomatis.</li>
+              <li><strong>Evaluasi</strong> (12 soal, skor 0 sampai 100): isi identitas, kirim jawaban tiap soal untuk melihat pembahasan, lalu unduh rekap PDF atau cetak pembahasan (pilih Simpan sebagai PDF).</li>
+              <li><strong>Refleksi:</strong> tiga pertanyaan metakognitif, disimpan di peramban.</li>
+            </ul>
+          </div>
+        </details>
+
+        <div class="p-3 rounded-xl bg-amber-50 border border-amber-200 text-xs text-amber-900 leading-relaxed"><strong>Tips cepat:</strong> selalu bandingkan <em>baris Δx terkecil</em> pada sisi kiri dan kanan. Pastikan sudut dalam <strong>radian</strong>. Kalau angkanya sama, limit ada; kalau berbeda atau membesar tanpa batas, limit tidak ada.</div>
+      </div>
+      <div class="px-5 sm:px-7 py-4 border-t border-slate-100 shrink-0">
+        <button onclick="closeModal('guide-modal')" class="w-full py-3 rounded-xl bg-teal-600 hover:bg-teal-700 text-white font-bold text-sm shadow-md transition-colors">Saya Mengerti, Mari Mulai!</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ASISTEN -->
+  <section id="assistant-win" role="dialog" aria-label="Asisten Penemuan" class="hidden fixed z-40 flex-col bg-white border border-slate-200 shadow-2xl overflow-hidden" style="left:16px; top:120px;">
+    <div id="assistant-head" class="bg-gradient-to-r from-amber-500 to-orange-500 text-white select-none">
+      <div class="lg:hidden pt-1.5"><div class="w-10 h-1 rounded-full bg-white/70 mx-auto"></div></div>
+      <div class="flex items-center gap-2 px-3 py-2">
+        <i class="fa-solid fa-grip-vertical opacity-70 hidden lg:inline"></i>
+        <span class="font-bold text-sm flex-1"><i class="fa-solid fa-lightbulb mr-1.5"></i>Asisten Penemuan Trigonometri</span>
+        <button onclick="toggleAssistantCollapse()" class="w-7 h-7 rounded-lg hover:bg-white/20 flex items-center justify-center text-xs" title="Ciutkan / bentangkan"><i id="asst-collapse-icon" class="fa-solid fa-minus"></i></button>
+        <button onclick="closeAssistant()" class="w-7 h-7 rounded-lg hover:bg-white/20 flex items-center justify-center text-sm" title="Tutup (Esc)"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+    </div>
+    <div id="assistant-body" class="flex flex-col flex-1 min-h-0">
+      <div id="asst-tabs" class="flex border-b border-slate-200 bg-slate-50 shrink-0">
+        <button id="asst-tab-pola" onclick="setAssistantTab('pola')" class="flex-1 py-2 text-[11px]"><i class="fa-solid fa-wand-magic-sparkles mr-1"></i>Petunjuk</button>
+        <button id="asst-tab-notasi" onclick="setAssistantTab('notasi')" class="flex-1 py-2 text-[11px]"><i class="fa-solid fa-spell-check mr-1"></i>Notasi</button>
+      </div>
+      <div class="flex-1 min-h-0 overflow-y-auto p-3">
+        <div id="asst-pane-pola" class="space-y-3">
+          <p class="text-[11px] text-slate-500">Petunjuk untuk: <strong id="asst-fn-name" class="text-sky-700"></strong></p>
+          <div class="p-3 rounded-xl bg-teal-50 border border-teal-200 text-xs text-teal-900 leading-relaxed">
+            <p class="font-black text-teal-700 mb-1"><i class="fa-solid fa-magnifying-glass mr-1"></i>Petunjuk 1: Amati dulu</p>
+            <div id="hint-1"></div>
+          </div>
+          <div id="hint-2-lock" class="text-center">
+            <button onclick="revealHint2()" class="px-3 py-2 rounded-lg bg-white hover:bg-amber-50 text-amber-700 border border-amber-300 text-xs font-bold active:scale-95 transition-all"><i class="fa-solid fa-lock-open mr-1"></i>Masih bingung? Tampilkan Petunjuk 2</button>
+          </div>
+          <div id="hint-2-box" class="hidden p-3 rounded-xl bg-amber-50 border border-amber-200 text-xs text-amber-900 leading-relaxed">
+            <p class="font-black text-amber-700 mb-1"><i class="fa-solid fa-square-root-variable mr-1"></i>Petunjuk 2: Bentuk penyelesaian</p>
+            <div id="hint-2"></div>
+          </div>
+        </div>
+        <div id="asst-pane-notasi" class="hidden space-y-2">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-[11px] bg-white rounded-lg border border-sky-100">
+              <thead class="bg-sky-100 text-sky-800"><tr><th class="py-1.5 px-2">Notasi</th><th class="py-1.5 px-2">Dibaca / artinya</th></tr></thead>
+              <tbody class="text-slate-700 divide-y divide-sky-100">
+                <tr><td class="py-1.5 px-2">$x \to a^-$</td><td class="py-1.5 px-2">$x$ mendekati $a$ dari kiri ($x &lt; a$)</td></tr>
+                <tr><td class="py-1.5 px-2">$x \to a^+$</td><td class="py-1.5 px-2">$x$ mendekati $a$ dari kanan ($x &gt; a$)</td></tr>
+                <tr><td class="py-1.5 px-2">$\lim_{x\to a^-} f(x)$</td><td class="py-1.5 px-2">limit kiri, ditulis $L_1$</td></tr>
+                <tr><td class="py-1.5 px-2">$\lim_{x\to a^+} f(x)$</td><td class="py-1.5 px-2">limit kanan, ditulis $L_2$</td></tr>
+                <tr><td class="py-1.5 px-2">$\lim_{x\to a} f(x)$</td><td class="py-1.5 px-2">ada jika $L_1 = L_2$</td></tr>
+                <tr><td class="py-1.5 px-2">$\pi$ rad</td><td class="py-1.5 px-2">sama dengan $180^\circ$; semua $x$ dalam <strong>radian</strong></td></tr>
+                <tr><td class="py-1.5 px-2">$\lim_{x\to 0}\frac{\sin x}{x}$</td><td class="py-1.5 px-2">bernilai $1$ (radian)</td></tr>
+                <tr><td class="py-1.5 px-2">$\pm\infty$</td><td class="py-1.5 px-2">nilai membesar tanpa batas (ke atas / ke bawah)</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="text-[11px] text-sky-900 leading-relaxed p-3 rounded-xl bg-sky-50 border border-sky-200"><strong>Cara mengetik:</strong> tulis <em>∞</em> atau <em>−∞</em> dengan tombol pintas, dan <em>π</em> untuk bilangan pi (mis. π/2). Untuk limit yang tidak ada, tulis <em>tidak ada</em>. Ingat: $f(a)$ tidak sama dengan limit.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div id="print-area"></div>
+
+  <script>
+  /* =====================================================================
+     TRIGOLIMITLAB - Lab Maya Limit Fungsi Trigonometri (Guided Discovery Learning)
+     Mode radian; a berupa kelipatan pi/12
+     ===================================================================== */
+  const $q = (id) => document.getElementById(id);
+
+  // ---------- Konstanta & pembantu radian ----------
+  const PI = Math.PI, U = PI / 12;   // a selalu kelipatan pi/12 rad
+  const gcd = (p, q) => q ? gcd(q, p % q) : Math.abs(p);
+  function aTxt(k) { if (k === 0) return '0'; const g = gcd(k, 12), n = k / g, d = 12 / g, an = Math.abs(n); return (n < 0 ? '−' : '') + (an === 1 ? 'π' : an + 'π') + (d === 1 ? '' : '/' + d); }
+  function aTex(k) { if (k === 0) return '0'; const g = gcd(k, 12), n = k / g, d = 12 / g, an = Math.abs(n), p = an === 1 ? '\\pi' : an + '\\pi'; return (n < 0 ? '-' : '') + (d === 1 ? p : `\\frac{${p}}{${d}}`); }
+  const isPoleK = (k) => (((k % 12) + 12) % 12) === 6;
+  const polesIn = (lo, hi) => { const r = []; for (let m = Math.ceil((lo - PI / 2) / PI); m <= Math.floor((hi - PI / 2) / PI); m++) r.push(PI / 2 + m * PI); return r; };
+  const cosZero = (x) => Math.abs(Math.cos(x)) < 1e-9;
+
+  // ---------- Daftar fungsi kasus ----------
+  const FUNCS = {
+    trig_sin: { name: 'Sinus (kontinu mulus)', tex: 'f(x) = \\sin x', defaultK: 2, f: x => Math.sin(x), breaks: [], marks: [],
+                note: '' },
+    trig_fundamental_sin: { name: 'Limit fundamental sinus: sin x / x', tex: 'f(x) = \\dfrac{\\sin x}{x}', defaultK: 0, specialK: 0,
+            f: x => Math.abs(x) < 1e-9 ? NaN : Math.sin(x) / x, breaks: [0], marks: [{ x: 0, y: 1, kind: 'open' }],
+            note: 'Inilah <strong>limit fundamental pertama</strong>: $\\lim_{x\\to 0}\\frac{\\sin x}{x} = 1$ (x dalam radian), walaupun $f(0)$ berlubang.' },
+    trig_fundamental_tan: { name: 'Limit fundamental tangen: tan x / x', tex: 'f(x) = \\dfrac{\\tan x}{x}', defaultK: 0, specialK: 0,
+            f: x => (Math.abs(x) < 1e-9 || cosZero(x)) ? NaN : Math.tan(x) / x, breaks: (lo, hi) => [0, ...polesIn(lo, hi)], marks: [{ x: 0, y: 1, kind: 'open' }],
+            note: 'Inilah <strong>limit fundamental kedua</strong>: $\\lim_{x\\to 0}\\frac{\\tan x}{x} = 1$.' },
+    trig_cos_transform: { name: 'Transformasi kosinus: (1 − cos x) / x²', tex: 'f(x) = \\dfrac{1 - \\cos x}{x^2}', defaultK: 0, specialK: 0,
+            f: x => Math.abs(x) < 1e-9 ? NaN : 2 * Math.pow(Math.sin(x / 2), 2) / (x * x), breaks: [0], marks: [{ x: 0, y: 0.5, kind: 'open' }],
+            note: 'Hasilnya $\\frac{1}{2}$, sesuai $1-\\cos x = 2\\sin^2\\frac{x}{2}$.' },
+    trig_piecewise: { name: 'Trigonometri terpotong (melompat)', tex: 'f(x) = \\begin{cases} \\sin x, & x \\lt 0 \\\\ \\cos x, & x \\ge 0 \\end{cases}', defaultK: 0, specialK: 0,
+            f: x => x < 0 ? Math.sin(x) : Math.cos(x), breaks: [0], marks: [{ x: 0, y: 0, kind: 'open' }, { x: 0, y: 1, kind: 'solid' }],
+            note: 'Grafik melompat dari tinggi $0$ ke $1$, padahal $f(0) = 1$.' },
+    trig_tan_asy: { name: 'Asimptot tangen: tan x', tex: 'f(x) = \\tan x', defaultK: 6, specialK: 6,
+            f: x => cosZero(x) ? NaN : Math.tan(x), breaks: (lo, hi) => polesIn(lo, hi), marks: [],
+            note: 'Garis $x = \\frac{\\pi}{2} + n\\pi$ adalah asimptot vertikal $\\tan x$.' }
+  };
+
+  const state = { fn: 'trig_fundamental_sin', k: 0, a: 0, zoom: 60, pan: { x: 0, y: 0 }, hyp: null, exSel: '', revealed: false, draggingA: false };
+  function applyK(k) { state.k = k; state.a = k * U; $q('sl-a').value = k; }
+const anim = { playing: false, u: 0, speed: 1, trace: true, last: 0, raf: 0 };
+  const steps = { active: 1, done: [false, false, false, false, false] };
+  const FN = () => FUNCS[state.fn];
+  const delta = (u) => Math.pow(10, -3 * u);   // 1 -> 0,001 (radian)
+  let canvas, ctx, currentMateriPage = 1;
+  const totalMateriPages = 7;
+  const prefersReducedMotion = () => !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  const lblPx = () => (window.innerWidth < 640 ? 13 : 12);
+  const hitR = (n) => n + ((window.matchMedia && window.matchMedia('(pointer: coarse)').matches) ? 10 : 0);
+
+  // ---------- Kebenaran limit (dihitung numerik) ----------
+  function sideLimit(fn, a, side) {
+    const v = fn.f(a + side * 1e-5);
+    if (isNaN(v)) return NaN;
+    if (Math.abs(v) > 2000) return v > 0 ? Infinity : -Infinity;
+    return Math.round(v * 1000) / 1000 + 0;
+  }
+  function truth() {
+    const fn = FN(), a = state.a;
+    const L1 = sideLimit(fn, a, -1), L2 = sideLimit(fn, a, 1);
+    const exists = isFinite(L1) && isFinite(L2) && Math.abs(L1 - L2) < 0.011;
+    const fa = fn.f(a);
+    return { L1, L2, exists, L: exists ? Math.round((L1 + L2) / 2 * 1000) / 1000 : null, fa: isNaN(fa) ? null : Math.round(fa * 1000) / 1000 };
+  }
+  const fmt = (v, d = 4) => {
+    if (v === null || v === undefined || (typeof v === 'number' && isNaN(v))) return 'tak terdefinisi';
+    if (!isFinite(v)) return v > 0 ? '+∞' : '−∞';
+    return (Math.round(v * Math.pow(10, d)) / Math.pow(10, d) + 0).toString().replace('.', ',').replace('-', '−');
+  };
+  const texNum = (v) => !isFinite(v) ? (v > 0 ? '+\\infty' : '-\\infty') : (Math.round(v * 1000) / 1000 + 0).toString();
+
+  // ---------- Awal ----------
+  window.onload = function () {
+    canvas = $q('lab-canvas'); ctx = canvas.getContext('2d');
+    const sel = $q('select-fn');
+    sel.innerHTML = Object.keys(FUNCS).map(k => `<option value="${k}" ${k === state.fn ? 'selected' : ''}>${FUNCS[k].name}</option>`).join('');
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+    initCanvasEvents();
+    initAssistant();
+    document.addEventListener('fullscreenchange', syncFullscreenIcon);
+    document.addEventListener('webkitfullscreenchange', syncFullscreenIcon);
+    recenter(false);
+    updateAnimControls(); updateStepper(); refreshLabels(); initEvaluation(); updateMateriPagination();
+    setTimeout(() => renderMath(), 500);
+  };
+
+  function startApp() {
+    const docEl = document.documentElement;
+    if (docEl.requestFullscreen) docEl.requestFullscreen().catch(() => {});
+    else if (docEl.webkitRequestFullscreen) docEl.webkitRequestFullscreen();
+    $q('cover-screen').classList.add('opacity-0', 'pointer-events-none');
+    setTimeout(() => {
+      $q('cover-screen').classList.add('hidden');
+      $q('app-container').classList.remove('hidden');
+      resizeCanvas(); draw(); syncFullscreenIcon(); syncAssistantVisibility(); showGuideOnStart();
+    }, 500);
+  }
+
+  let guideShown = false;
+  function showGuideOnStart() {
+    if (guideShown) return; guideShown = true;
+    const body = document.querySelector('#guide-modal .overflow-y-auto'); if (body) body.scrollTop = 0;
+    openModal('guide-modal');
+  }
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape') return;
+    let closed = false;
+    ['guide-modal', 'info-modal'].forEach(id => { const m = $q(id); if (m && !m.classList.contains('hidden')) { closeModal(id); closed = true; } });
+    if (closed) e.stopImmediatePropagation();
+  });
+
+  function switchTab(tabId) {
+    document.querySelectorAll('.tab-page').forEach(el => el.classList.add('hidden'));
+    document.querySelectorAll('.nav-tab').forEach(el => { el.className = 'nav-tab px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold text-slate-500 hover:text-slate-700 transition-all'; });
+    $q('tab-' + tabId).classList.remove('hidden');
+    $q('nav-' + tabId).className = 'nav-tab px-3 py-1.5 rounded-lg text-xs sm:text-sm font-bold transition-all text-sky-700 bg-white border border-slate-200 shadow-sm';
+    if (tabId === 'lab') setTimeout(resizeCanvas, 50);
+    syncAssistantVisibility();
+    if (tabId !== 'lab') pauseAnimation();
+  }
+
+  function switchMobileLabTab(tab) {
+    const mc = $q('mob-tab-canvas'), mp = $q('mob-tab-panel'), sc = $q('mobile-sec-canvas'), sp = $q('mobile-sec-panel');
+    if (tab === 'canvas') {
+      mc.className = 'flex-1 py-2.5 text-center text-xs font-black text-sky-600 border-b-2 border-sky-600 bg-sky-50/50';
+      mp.className = 'flex-1 py-2.5 text-center text-xs font-bold text-slate-500 border-b-2 border-transparent bg-white';
+      sc.classList.remove('hidden'); sp.classList.add('hidden'); resizeCanvas();
+    } else {
+      mc.className = 'flex-1 py-2.5 text-center text-xs font-bold text-slate-500 border-b-2 border-transparent bg-white';
+      mp.className = 'flex-1 py-2.5 text-center text-xs font-black text-sky-600 border-b-2 border-sky-600 bg-sky-50/50';
+      sc.classList.add('hidden'); sp.classList.remove('hidden'); sp.classList.add('flex');
+    }
+  }
+  function openModal(id) { $q(id).classList.remove('hidden'); }
+  function closeModal(id) { $q(id).classList.add('hidden'); }
+  const isFullscreen = () => !!(document.fullscreenElement || document.webkitFullscreenElement);
+  function syncFullscreenIcon() { const i = $q('fullscreen-icon'); if (i) i.className = isFullscreen() ? 'fa-solid fa-compress' : 'fa-solid fa-expand'; setTimeout(resizeCanvas, 150); }
+  function toggleFullscreen() {
+    const el = document.documentElement;
+    if (!isFullscreen()) { const p = el.requestFullscreen ? el.requestFullscreen() : (el.webkitRequestFullscreen && el.webkitRequestFullscreen()); if (p && p.catch) p.catch(() => {}); }
+    else { const p = document.exitFullscreen ? document.exitFullscreen() : (document.webkitExitFullscreen && document.webkitExitFullscreen()); if (p && p.catch) p.catch(() => {}); }
+  }
+
+  // ---------- Materi ----------
+  function updateMateriPagination() {
+    document.querySelectorAll('.materi-page').forEach((el, i) => el.classList.toggle('hidden', i + 1 !== currentMateriPage));
+    $q('materi-page-indicator').innerText = `${currentMateriPage} / ${totalMateriPages}`;
+    $q('btn-prev-materi').disabled = currentMateriPage === 1;
+    $q('btn-next-materi').disabled = currentMateriPage === totalMateriPages;
+    renderMath();
+  }
+  function prevMateri() { if (currentMateriPage > 1) { currentMateriPage--; updateMateriPagination(); $q('tab-materi').scrollTo(0, 0); } }
+  function nextMateri() { if (currentMateriPage < totalMateriPages) { currentMateriPage++; updateMateriPagination(); $q('tab-materi').scrollTo(0, 0); } }
+  function toggleReveal(id, btn) {
+    const el = $q(id); if (!el) return;
+    const open = el.classList.toggle('hidden') === false;
+    btn.setAttribute('aria-expanded', String(open));
+    btn.innerHTML = open ? '<i class="fa-solid fa-eye-slash mr-1"></i>Sembunyikan' : '<i class="fa-solid fa-eye mr-1"></i>Tampilkan lagi';
+  }
+  function tryInLab(fnId, k) {
+    switchTab('lab');
+    if (window.innerWidth < 1024) switchMobileLabTab('canvas');
+    state.fn = fnId; applyK(k);
+    $q('select-fn').value = fnId;
+    state.zoom = 60;
+    stopAnimation(false); anim.u = 0; state.revealed = false;
+    resetHypothesis(true);
+    recenter(false); refreshLabels(); draw();
+  }
+
+  // ---------- Kanvas ----------
+  function resizeCanvas() {
+    if (!canvas) return;
+    if (window.innerWidth >= 1024) $q('mobile-sec-canvas').classList.remove('hidden');
+    const rect = canvas.parentElement.getBoundingClientRect();
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = rect.width * dpr; canvas.height = rect.height * dpr;
+    ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.scale(dpr, dpr);
+    canvas.style.width = rect.width + 'px'; canvas.style.height = rect.height + 'px';
+    draw();
+  }
+  function getOrigin() { const r = canvas.parentElement.getBoundingClientRect(); return { w: r.width, h: r.height, ox: r.width / 2 + state.pan.x, oy: r.height / 2 + state.pan.y }; }
+  function toCanvasPt(p) { const o = getOrigin(); return { x: o.ox + p.x * state.zoom, y: o.oy - p.y * state.zoom }; }
+  function zoomCanvas(f) { state.zoom = Math.max(25, Math.min(160, state.zoom * f)); draw(); }
+  function recenter(doDraw) {
+    const T = truth(), z = state.zoom;
+    const cy = [T.L1, T.L2].find(v => isFinite(v));
+    state.pan.x = -state.a * z;
+    state.pan.y = (isFinite(cy) ? Math.max(-3, Math.min(3, cy)) : 0) * z;
+    if (doDraw !== false && ctx) draw();
+  }
+  function resetLabView() {
+    stopAnimation(false); anim.u = 0; state.revealed = false; state.zoom = 60;
+    state.fn = 'trig_fundamental_sin'; applyK(0);
+    $q('select-fn').value = 'trig_fundamental_sin';
+    resetHypothesis(true); recenter(false); refreshLabels(); draw();
+  }
+
+  function draw() {
+    if (!ctx || !canvas.parentElement) return;
+    const { w, h, ox, oy } = getOrigin(), z = state.zoom;
+    const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+    ctx.setLineDash([]); ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, w, h);
+    const sx = Math.floor(-ox / z), ex = Math.ceil((w - ox) / z), sy = Math.floor((oy - h) / z), ey = Math.ceil(oy / z);
+    const step = z < 22 ? 5 : z < 45 ? 2 : 1;
+    ctx.lineWidth = 1;
+    const ux = PI / 4 * z, j0 = Math.floor(-ox / ux) - 1, j1 = Math.ceil((w - ox) / ux) + 1;
+    for (let j = j0; j <= j1; j++) { const cx = ox + j * ux; ctx.strokeStyle = j % 2 === 0 ? '#cbd5e1' : '#e8edf3'; ctx.beginPath(); ctx.moveTo(cx, 0); ctx.lineTo(cx, h); ctx.stroke(); }
+    for (let y = sy; y <= ey; y++) { const cy = oy - y * z; ctx.strokeStyle = y % 5 === 0 ? '#cbd5e1' : '#e8edf3'; ctx.beginPath(); ctx.moveTo(0, cy); ctx.lineTo(w, cy); ctx.stroke(); }
+    ctx.lineWidth = 1.75; ctx.strokeStyle = '#334155'; ctx.fillStyle = '#334155';
+    ctx.beginPath(); ctx.moveTo(0, oy); ctx.lineTo(w, oy); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(w, oy); ctx.lineTo(w - 10, oy - 4); ctx.lineTo(w - 10, oy + 4); ctx.fill();
+    ctx.beginPath(); ctx.moveTo(ox, 0); ctx.lineTo(ox, h); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(ox, 0); ctx.lineTo(ox - 4, 10); ctx.lineTo(ox + 4, 10); ctx.fill();
+    ctx.font = 'bold 14px "Inter", sans-serif'; ctx.textAlign = 'left';
+    ctx.fillText('X', w - 18, clamp(oy - 12, 16, h - 8)); ctx.fillText('Y', clamp(ox + 12, 4, w - 16), 18);
+    ctx.font = '11px "Fira Code", monospace'; ctx.fillStyle = '#64748b'; ctx.textAlign = 'center';
+    const numY = clamp(oy + 15, 14, h - 6);
+    { const uh = PI / 2 * z, every = uh < 55 ? 2 : 1, m0 = Math.floor(-ox / uh) - 1, m1 = Math.ceil((w - ox) / uh) + 1;
+      ctx.font = 'bold 11px "Fira Code", monospace'; ctx.fillStyle = '#0369a1';
+      for (let m = m0; m <= m1; m++) if (m !== 0 && m % every === 0) ctx.fillText(aTxt(6 * m), ox + m * uh, numY);
+      ctx.fillStyle = '#64748b'; ctx.font = '11px "Fira Code", monospace'; }
+    ctx.textAlign = 'right'; const numX = clamp(ox - 6, 26, w - 6);
+    for (let y = sy; y <= ey; y++) if (y !== 0 && y % step === 0) ctx.fillText(y, numX, oy - y * z + 4);
+    ctx.fillText('0', clamp(ox - 6, 14, w - 6), numY); ctx.textAlign = 'left';
+
+    drawVerticalA(); drawCurve(); drawMarks(); drawGhost(); drawRevealed(); drawTracers(); drawHandle();
+    updateReadouts();
+  }
+
+  function drawVerticalA() {
+    const { w, h, ox } = getOrigin(), cx = ox + state.a * state.zoom;
+    ctx.save(); ctx.setLineDash([7, 6]); ctx.lineWidth = 2; ctx.strokeStyle = '#f59e0b';
+    ctx.beginPath(); ctx.moveTo(cx, 0); ctx.lineTo(cx, h); ctx.stroke(); ctx.setLineDash([]);
+    ctx.font = `bold ${lblPx()}px "Inter", sans-serif`; ctx.fillStyle = '#b45309'; ctx.textAlign = 'left';
+    ctx.lineWidth = 4; ctx.strokeStyle = 'rgba(255,255,255,0.92)'; ctx.lineJoin = 'round';
+    const t = `x = ${aTxt(state.k)}`; ctx.strokeText(t, Math.min(cx + 6, w - 50), 36); ctx.fillText(t, Math.min(cx + 6, w - 50), 36);
+    ctx.restore();
+  }
+
+  function drawCurve() {
+    const fn = FN(), { w, h, ox, oy } = getOrigin(), z = state.zoom;
+    const xmin = (-ox) / z - 1, xmax = (w - ox) / z + 1;
+    const bk = typeof fn.breaks === 'function' ? fn.breaks(xmin, xmax) : fn.breaks;
+    const br = [xmin, ...bk.filter(b => b > xmin && b < xmax).sort((p, q) => p - q), xmax];
+    ctx.save(); ctx.strokeStyle = '#0891b2'; ctx.lineWidth = 2.75; ctx.lineJoin = 'round'; ctx.setLineDash([]);
+    for (let s = 0; s < br.length - 1; s++) {
+      const eps = 1e-6, l = s > 0 ? br[s] + eps : br[s], r = s < br.length - 2 ? br[s + 1] - eps : br[s + 1];
+      const n = Math.max(2, Math.ceil((r - l) * z / 1.5)); let pen = false;
+      ctx.beginPath();
+      for (let i = 0; i <= n; i++) {
+        const x = l + (r - l) * i / n, y = fn.f(x);
+        if (!isFinite(y)) { pen = false; continue; }
+        const px = ox + x * z, py = oy - y * z;
+        if (py < -h * 2 || py > h * 3) { pen = false; continue; }
+        if (!pen) { ctx.moveTo(px, py); pen = true; } else ctx.lineTo(px, py);
+      }
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+
+  function drawMarks() {
+    FN().marks.forEach(m => {
+      const c = toCanvasPt(m);
+      ctx.save(); ctx.setLineDash([]); ctx.lineWidth = 2.75; ctx.strokeStyle = '#0891b2';
+      ctx.beginPath(); ctx.arc(c.x, c.y, 6.5, 0, Math.PI * 2);
+      ctx.fillStyle = m.kind === 'open' ? '#ffffff' : '#0891b2'; ctx.fill(); ctx.stroke();
+      ctx.restore();
+    });
+  }
+
+  function drawDiamond(c, r, color) {
+    ctx.save(); ctx.setLineDash([]); ctx.lineWidth = 2.5; ctx.strokeStyle = color; ctx.fillStyle = '#ffffff';
+    ctx.beginPath(); ctx.moveTo(c.x, c.y - r); ctx.lineTo(c.x + r, c.y); ctx.lineTo(c.x, c.y + r); ctx.lineTo(c.x - r, c.y); ctx.closePath(); ctx.fill(); ctx.stroke(); ctx.restore();
+  }
+
+  function pinned(p, h) {
+    const c = toCanvasPt(p);
+    let off = 0;
+    if (c.y < 16) { c.y = 16; off = -1; } else if (c.y > h - 16) { c.y = h - 16; off = 1; }
+    return { c, off };
+  }
+
+  function drawGhost() {
+    const lg = $q('legend-ghost');
+    if (!state.hyp) { lg.classList.add('hidden'); lg.classList.remove('flex'); return; }
+    lg.classList.remove('hidden'); lg.classList.add('flex');
+    const { h } = getOrigin();
+    [[state.hyp.l1, -14], [state.hyp.l2, 14]].forEach(([v, dx]) => {
+      if (typeof v !== 'number') return;
+      const big = !isFinite(v), { c, off } = pinned({ x: state.a, y: big ? (v > 0 ? 1e4 : -1e4) : v }, h);
+      ctx.save(); ctx.setLineDash([5, 4]); ctx.lineWidth = 2; ctx.strokeStyle = '#f59e0b';
+      ctx.beginPath(); ctx.arc(c.x + dx * 0.2, c.y, 13, 0, Math.PI * 2); ctx.stroke(); ctx.restore();
+      drawDiamond({ x: c.x + dx * 0.2, y: c.y }, 6, '#d97706');
+    });
+  }
+
+  function drawRevealed() {
+    if (!state.revealed) return;
+    const T = truth(), { h } = getOrigin();
+    [[T.L1, '#2563eb', "L₁", -1], [T.L2, '#059669', "L₂", 1]].forEach(([v, col, name, side]) => {
+      if (!isFinite(v)) return;
+      const c = toCanvasPt({ x: state.a, y: v });
+      ctx.save(); ctx.setLineDash([]); ctx.lineWidth = 3; ctx.strokeStyle = col;
+      ctx.beginPath(); ctx.arc(c.x, c.y, 11, 0, Math.PI * 2); ctx.stroke();
+      ctx.font = `bold ${lblPx()}px "Inter", sans-serif`; ctx.textAlign = side < 0 ? 'right' : 'left';
+      const t = `${name} = ${fmt(v, 3)}`, tx = c.x + side * 16, ty = c.y + (side < 0 ? -12 : 20);
+      ctx.lineWidth = 4; ctx.strokeStyle = 'rgba(255,255,255,0.92)'; ctx.lineJoin = 'round'; ctx.strokeText(t, tx, ty); ctx.fillStyle = col; ctx.fillText(t, tx, ty);
+      ctx.restore();
+    });
+  }
+
+  function tracerPos(side) { return state.a + side * delta(anim.u); }
+
+  function drawTracers() {
+    const fn = FN(), { w, h, ox } = getOrigin();
+    [[-1, '#2563eb', 'x → a⁻'], [1, '#059669', 'x → a⁺']].forEach(([side, col, name]) => {
+      // jejak
+      if (anim.trace && anim.u > 0.001) {
+        ctx.save(); ctx.globalAlpha = 0.4;
+        const n = Math.max(2, Math.ceil(anim.u * 16));
+        for (let i = 0; i < n; i++) {
+          const x = state.a + side * delta(anim.u * i / n), y = fn.f(x);
+          if (!isFinite(y)) continue;
+          const c = toCanvasPt({ x, y }); if (c.y < 0 || c.y > h) continue;
+          ctx.beginPath(); ctx.arc(c.x, c.y, 3.5, 0, Math.PI * 2); ctx.fillStyle = col; ctx.fill();
+        }
+        ctx.restore();
+      }
+      const x = tracerPos(side), y = fn.f(x);
+      if (!isFinite(y)) return;
+      const { c, off } = pinned({ x, y }, h);
+      if (!off) { // garis bantu mendatar menuju sumbu Y
+        ctx.save(); ctx.setLineDash([3, 4]); ctx.lineWidth = 1.25; ctx.strokeStyle = col; ctx.globalAlpha = 0.55;
+        ctx.beginPath(); ctx.moveTo(c.x, c.y); ctx.lineTo(ox, c.y); ctx.stroke(); ctx.restore();
+      }
+      ctx.save(); ctx.setLineDash([]);
+      ctx.beginPath(); ctx.arc(c.x, c.y, 8, 0, Math.PI * 2); ctx.fillStyle = col; ctx.fill(); ctx.lineWidth = 3; ctx.strokeStyle = '#fff'; ctx.stroke();
+      if (off) { // penunjuk bahwa titik di luar layar
+        ctx.beginPath(); ctx.moveTo(c.x - 7, c.y + off * -12); ctx.lineTo(c.x + 7, c.y + off * -12); ctx.lineTo(c.x, c.y + off * -22); ctx.closePath();
+        ctx.fillStyle = col; ctx.fill();
+      }
+      ctx.font = `bold ${lblPx()}px "Inter", sans-serif`; ctx.textAlign = side < 0 ? 'right' : 'left';
+      const t = `(${fmt(x, 3)}; ${fmt(y, 3)})`, tx = c.x + side * 13, ty = c.y + (side < 0 ? -12 : 18);
+      ctx.lineWidth = 4; ctx.strokeStyle = 'rgba(255,255,255,0.92)'; ctx.lineJoin = 'round'; ctx.strokeText(t, tx, ty); ctx.fillStyle = col; ctx.fillText(t, tx, ty);
+      ctx.restore();
+    });
+  }
+
+  function drawHandle() {
+    const c = toCanvasPt({ x: state.a, y: 0 });
+    ctx.save(); ctx.setLineDash([]);
+    ctx.beginPath(); ctx.arc(c.x, c.y, 9, 0, Math.PI * 2); ctx.fillStyle = '#f97316'; ctx.fill();
+    ctx.lineWidth = 3; ctx.strokeStyle = '#fff'; ctx.stroke();
+    ctx.beginPath(); ctx.arc(c.x, c.y, 2.5, 0, Math.PI * 2); ctx.fillStyle = '#fff'; ctx.fill();
+    ctx.font = `bold ${lblPx()}px "Inter", sans-serif`; ctx.textAlign = 'left';
+    ctx.lineJoin = 'round'; ctx.lineWidth = 4; ctx.strokeStyle = 'rgba(255,255,255,0.92)';
+    ctx.strokeText(`a = ${aTxt(state.k)}`, c.x + 13, c.y - 12); ctx.fillStyle = '#c2410c'; ctx.fillText(`a = ${aTxt(state.k)}`, c.x + 13, c.y - 12);
+    ctx.restore();
+  }
+
+  // ---------- Interaksi kanvas ----------
+  function initCanvasEvents() {
+    let panning = false, startPan = { x: 0, y: 0 };
+    const getPos = (e) => {
+      const r = canvas.getBoundingClientRect();
+      const cx = e.touches ? e.touches[0].clientX : e.clientX, cy = e.touches ? e.touches[0].clientY : e.clientY;
+      return { x: cx - r.left, y: cy - r.top };
+    };
+    const start = (e) => {
+      const pos = getPos(e), { ox, oy } = getOrigin();
+      const hx = ox + state.a * state.zoom, hy = oy;
+      if (Math.hypot(pos.x - hx, pos.y - hy) < hitR(22)) { state.draggingA = true; if (anim.playing) pauseAnimation(); return; }
+      panning = true; startPan = { x: pos.x - state.pan.x, y: pos.y - state.pan.y };
+    };
+    const move = (e) => {
+      const pos = getPos(e), { ox } = getOrigin();
+      if (state.draggingA) {
+        const nk = Math.max(-24, Math.min(24, Math.round((pos.x - ox) / state.zoom / U)));
+        if (nk !== state.k) { applyK(nk); onParamChanged(); }
+      } else if (panning) { state.pan.x = pos.x - startPan.x; state.pan.y = pos.y - startPan.y; draw(); }
+    };
+    const end = () => { state.draggingA = false; panning = false; };
+    canvas.addEventListener('wheel', (e) => { e.preventDefault(); zoomCanvas(e.deltaY < 0 ? 1.1 : 0.9); }, { passive: false });
+    canvas.addEventListener('mousedown', start); canvas.addEventListener('mousemove', move); window.addEventListener('mouseup', end);
+    canvas.addEventListener('touchstart', start, { passive: true }); canvas.addEventListener('touchmove', move, { passive: true }); window.addEventListener('touchend', end);
+  }
+
+  // ---------- Perubahan fungsi / a ----------
+  function setFunction(id) {
+    stopAnimation(false); anim.u = 0; state.revealed = false;
+    state.fn = id; applyK(FUNCS[id].defaultK);
+    resetHypothesis(true); recenter(false); refreshLabels(); draw();
+  }
+  function updateA(v) {
+    applyK(parseInt(v, 10)); onParamChanged(); recenter(true);
+  }
+  function setK(k) { applyK(k); onParamChanged(); recenter(true); }
+  function onParamChanged() {
+    stopAnimation(false); anim.u = 0; state.revealed = false;
+    resetHypothesis(false); refreshLabels(); draw();
+  }
+  function stopAnimation(redraw) { cancelAnimationFrame(anim.raf); anim.playing = false; updateAnimControls(); if (redraw) draw(); }
+
+  // Label bergantung pada fungsi dan a
+  function refreshLabels() {
+    const a = aTex(state.k);
+    $q('val-a').innerText = state.k === 0 ? '0' : `${aTxt(state.k)} ≈ ${fmt(state.a, 3)}`;
+    document.querySelectorAll('#preset-group button').forEach(b => b.classList.toggle('on', parseInt(b.dataset.k, 10) === state.k));
+    $q('lbl-l1').innerHTML = `$\\lim_{x\\to ${a}^-} f(x) =$`;
+    $q('lbl-l2').innerHTML = `$\\lim_{x\\to ${a}^+} f(x) =$`;
+    $q('lbl-l').innerHTML = `$\\lim_{x\\to ${a}} f(x) =$`;
+    $q('fn-tex').innerHTML = `$${FN().tex}$`;
+    const T = truth();
+    $q('fa-readout').innerHTML = T.fa === null ? `Nilai fungsi di $x = ${a}$: <span class="text-rose-600">tidak terdefinisi</span>` : `Nilai fungsi di $x = ${a}$: <span class="text-sky-700">$f(${a}) = ${texNum(T.fa)}$</span>`;
+    updateAssistantContent(); updateStepper(); updateAnimControls();
+    renderMath($q('mobile-sec-panel')); renderMath($q('val-a').parentElement);
+    describeCanvas();
+  }
+
+  function describeCanvas() {
+    const T = truth();
+    canvas.setAttribute('aria-label', `Grafik ${FN().name}. Target x menuju ${aTxt(state.k)} radian. Pelacak kiri dan kanan pada jarak ${fmt(delta(anim.u), 3)} radian dari ${aTxt(state.k)}.`);
+  }
+
+  // ---------- Tabel & info ----------
+  function updateReadouts() {
+    const fn = FN(), a = state.a;
+    const row = (d, live) => {
+      const xl = a - d, xr = a + d;
+      const cell = (x) => `<td class="${live ? 'py-1.5 px-2' : 'py-1.5 px-2'}">${fmt(x, 4)}</td>`;
+      const bg = live ? 'bg-amber-50 font-bold' : '';
+      return `<tr class="${bg}"><td class="py-1.5 px-2 text-slate-500">${live ? '▶ ' : ''}${fmt(d, 4)}</td>${cell(xl)}<td class="py-1.5 px-2 text-blue-700">${fmt(fn.f(xl), 5)}</td>${cell(xr)}<td class="py-1.5 px-2 text-emerald-700">${fmt(fn.f(xr), 5)}</td></tr>`;
+    };
+    const tb = $q('limit-table-body');
+    if (tb) tb.innerHTML = [0.1, 0.01, 0.001].map(d => row(d, false)).join('') + row(delta(anim.u), true) +
+      `<tr class="font-bold text-slate-600 bg-slate-50"><td class="py-1.5 px-2">→ 0</td><td class="py-1.5 px-2">→ ${aTxt(state.k)}⁻</td><td class="py-1.5 px-2 text-blue-700">→ L₁ ?</td><td class="py-1.5 px-2">→ ${aTxt(state.k)}⁺</td><td class="py-1.5 px-2 text-emerald-700">→ L₂ ?</td></tr>`;
+    const d = delta(anim.u), xl = a - d, xr = a + d;
+    const box = $q('anim-info');
+    box.innerHTML = `<div class="text-purple-800">Δx = ${fmt(d, 3)}</div>` +
+      `<div class="text-blue-700">kiri: x = ${fmt(xl, 3)}, f = ${fmt(fn.f(xl), 3)}</div>` +
+      `<div class="text-emerald-700">kanan: x = ${fmt(xr, 3)}, f = ${fmt(fn.f(xr), 3)}</div>` +
+      (prefersReducedMotion() && !anim.playing ? `<div class="text-slate-500 font-semibold">Gerak dikurangi: geser penggeser Δx.</div>` : '');
+  }
+
+  // ---------- Animasi pendekatan ----------
+  function playAnimation(restart) {
+    cancelAnimationFrame(anim.raf);
+    state.revealed = false;
+    if (prefersReducedMotion()) { anim.playing = false; anim.u = 0; updateAnimControls(); draw(); return; }
+    if (restart || anim.u >= 1) anim.u = 0;
+    anim.playing = true; anim.last = performance.now();
+    updateAnimControls(); anim.raf = requestAnimationFrame(tickAnimation);
+  }
+  function tickAnimation(now) {
+    if (!anim.playing) return;
+    const dt = Math.min(64, now - anim.last); anim.last = now;
+    anim.u = Math.min(1, anim.u + dt / (3000 / anim.speed));
+    if (anim.u >= 1) { anim.playing = false; finishApproach(); draw(); updateAnimControls(); return; }
+    draw(); updateAnimControls(); anim.raf = requestAnimationFrame(tickAnimation);
+  }
+  function finishApproach() { state.revealed = true; updateConclusion(); if (steps.active === 4) markStepDone(4); }
+  function pauseAnimation() { if (!anim.playing) return; anim.playing = false; cancelAnimationFrame(anim.raf); updateAnimControls(); }
+  function toggleAnimation() {
+    if (anim.playing) pauseAnimation();
+    else if (anim.u > 0 && anim.u < 1 && !prefersReducedMotion()) playAnimation(false);
+    else playAnimation(true);
+  }
+  function scrubAnimation(val) {
+    cancelAnimationFrame(anim.raf); anim.playing = false;
+    anim.u = Math.max(0, Math.min(1, Number(val) / 100));
+    state.revealed = anim.u >= 0.999;
+    if (state.revealed) { updateConclusion(); if (steps.active === 4) markStepDone(4); }
+    draw(); updateAnimControls(true);
+  }
+  function setAnimSpeed(v) { anim.speed = v; updateAnimControls(); }
+  function toggleTrace(on) { anim.trace = !!on; draw(); }
+  function updateAnimControls(fromScrub) {
+    const label = $q('anim-play-label'), icon = $q('anim-play-icon'); if (!label) return;
+    const reduced = prefersReducedMotion();
+    if (anim.playing) { label.innerText = 'Jeda'; icon.className = 'fa-solid fa-pause'; }
+    else if (anim.u > 0 && anim.u < 1 && !reduced) { label.innerText = 'Lanjutkan'; icon.className = 'fa-solid fa-play'; }
+    else { label.innerText = reduced ? 'Lihat Proses' : 'Jalankan Pendekatan'; icon.className = 'fa-solid fa-play'; }
+    if (!fromScrub) $q('anim-scrub').value = Math.round(anim.u * 100);
+    $q('anim-pct').innerText = 'Δx = ' + fmt(delta(anim.u), 3);
+    [['0.5', 0.5], ['1', 1], ['2', 2]].forEach(([id, v]) => {
+      $q('anim-sp-' + id).className = 'px-2 py-1 rounded-md border text-[11px] font-bold ' + (anim.speed === v ? 'bg-purple-600 text-white border-purple-600' : 'bg-white text-purple-700 border-purple-200 hover:bg-purple-50');
+    });
+    $q('anim-trace').checked = anim.trace;
+  }
+
+  function updateConclusion() {
+    const T = truth(), box = $q('step4-concl'), a = aTex(state.k); if (!box) return;
+    let html;
+    if (T.exists) {
+      html = `<i class="fa-solid fa-circle-check mr-1"></i>Kedua pelacak bertemu di ketinggian yang sama. $L_1 = L_2 = ${texNum(T.L)}$, sehingga $\\lim_{x\\to ${a}} f(x) = ${texNum(T.L)}$ (limit <strong>ada</strong>).` +
+        (T.fa === null ? ` Perhatikan: $f(${a})$ tidak terdefinisi, tetapi limitnya tetap ada.` : (Math.abs(T.fa - T.L) > 0.011 ? ` Perhatikan: $f(${a}) = ${texNum(T.fa)}$ berbeda dari limitnya.` : ` Di sini $f(${a}) = ${texNum(T.fa)}$ sama dengan limitnya.`));
+    } else {
+      html = `<i class="fa-solid fa-triangle-exclamation mr-1"></i>Kedua pelacak menuju ketinggian berbeda: $L_1 = ${texNum(T.L1)}$ dan $L_2 = ${texNum(T.L2)}$. Karena $L_1 \\ne L_2$, $\\lim_{x\\to ${a}} f(x)$ <strong>tidak ada</strong>.` +
+        ((!isFinite(T.L1) || !isFinite(T.L2)) ? ` Nilai $f(x)$ membesar tanpa batas: garis $x = ${a}$ adalah asimptot vertikal.` : '');
+    }
+    if (FN().note && state.k === FN().specialK) html += `<div class="mt-1.5 font-semibold">${FN().note}</div>`;
+    box.className = 'p-3 rounded-xl border text-xs font-bold leading-relaxed ' + (T.exists ? 'bg-emerald-50 border-emerald-200 text-emerald-900' : 'bg-rose-50 border-rose-200 text-rose-900');
+    box.innerHTML = html; renderMath(box);
+  }
+
+  // ---------- Hipotesis ----------
+  let lastHypInput = null;
+  document.addEventListener('focusin', (e) => { if (e.target && e.target.classList && e.target.classList.contains('h-input')) lastHypInput = e.target; });
+  const HYP_IDS = ['h-l1', 'h-l2', 'h-l'];
+  function onHypInput(el) { el.classList.remove('cell-ok', 'cell-bad', 'cell-near'); }
+  function setExist(v) {
+    state.exSel = v; $q('ex-ada').classList.toggle('on', v === 'ada'); $q('ex-tidak').classList.toggle('on', v === 'tidak');
+    $q('ex-group').classList.remove('cell-ok', 'cell-bad');
+  }
+  function resetHypothesis(clearInputs) {
+    state.hyp = null;
+    const fb = $q('matrix-feedback'); if (fb) { fb.classList.add('hidden'); fb.innerHTML = ''; }
+    HYP_IDS.forEach(id => { const el = $q(id); if (!el) return; el.classList.remove('cell-ok', 'cell-bad', 'cell-near'); if (clearInputs) el.value = ''; });
+    $q('ex-group').classList.remove('cell-ok', 'cell-bad');
+    if (clearInputs) { setExist(''); resetSteps(); }
+    else { steps.done[3] = false; steps.done[4] = false; const c = $q('step4-concl'); if (c) c.classList.add('hidden'); updateStepper(); }
+    const c = $q('step4-concl'); if (c && clearInputs) c.classList.add('hidden');
+  }
+
+  function keyInsert(tok) {
+    let el = lastHypInput;
+    if (!el || !HYP_IDS.includes(el.id)) el = HYP_IDS.map(id => $q(id)).find(e => !e.value.trim()) || $q('h-l1');
+    el.focus({ preventScroll: true });
+    if (tok === '±') { const v = el.value.trim(); el.value = v.startsWith('-') ? v.slice(1) : '-' + v; }
+    else if (tok === '⌫') { const a = el.selectionStart, b = el.selectionEnd; if (a !== b) el.setRangeText('', a, b, 'end'); else if (a > 0) el.setRangeText('', a - 1, a, 'end'); }
+    else if (tok === 'tidak ada' || tok === '∞' || tok === '-∞') { el.value = tok; }
+    else { const a = el.selectionStart == null ? el.value.length : el.selectionStart; const b = el.selectionEnd == null ? a : el.selectionEnd; el.setRangeText(tok, a, b, 'end'); }
+    onHypInput(el);
+  }
+
+  // Parser aman: angka, desimal koma, pecahan, ±∞, "tidak ada"
+  function parseLim(raw) {
+    let s = String(raw == null ? '' : raw).trim().toLowerCase().replace(/\s+/g, ' ').replace(/[−–]/g, '-').replace(/,/g, '.');
+    if (!s) return NaN;
+    if (/^(tidak ada|tdk ada|dne|tidak ada limit)$/.test(s)) return 'DNE';
+    const inf = /^([+-]?)\s*(∞|inf|infty|infinity|tak ?hingga)$/.exec(s);
+    if (inf) return inf[1] === '-' ? -Infinity : Infinity;
+    const m = /^([+-]?)\s*(\d*\.?\d*)\s*(π|pi)?\s*(?:\/\s*(\d*\.?\d*)\s*(π|pi)?)?$/.exec(s);
+    if (!m) return NaN;
+    const num = m[2] !== '' ? parseFloat(m[2]) : (m[3] ? 1 : NaN);
+    if (isNaN(num)) return NaN;
+    let v = num * (m[3] ? PI : 1);
+    if (/\/\s*$/.test(s) || (s.includes('/') && m[4] === undefined)) return NaN;
+    if (s.includes('/')) { const den = m[4] !== '' ? parseFloat(m[4]) : (m[5] ? 1 : NaN); if (isNaN(den)) return NaN; v = v / (den * (m[5] ? PI : 1)); }
+    if (m[1] === '-') v = -v;
+    return isFinite(v) ? v : NaN;
+  }
+  const eqL = (u, t) => (!isFinite(t) || !isFinite(u)) ? u === t : Math.abs(u - t) < 0.011;
+  const negEq = (u, t) => isFinite(t) && isFinite(u) && Math.abs(t) > 0.011 && Math.abs(u + t) < 0.011;
+
+  function setFeedback(type, html) {
+    const fb = $q('matrix-feedback');
+    fb.classList.remove('hidden', 'bg-emerald-100', 'border-emerald-300', 'text-emerald-800', 'bg-rose-100', 'border-rose-300', 'text-rose-800', 'bg-amber-100', 'border-amber-300', 'text-amber-900');
+    fb.classList.add(...({ ok: ['bg-emerald-100', 'border-emerald-300', 'text-emerald-800'], bad: ['bg-rose-100', 'border-rose-300', 'text-rose-800'], warn: ['bg-amber-100', 'border-amber-300', 'text-amber-900'] }[type]));
+    fb.innerHTML = html; renderMath(fb);
+  }
+
+  function testHypothesis() {
+    const T = truth(), a = aTex(state.k);
+    const els = { l1: $q('h-l1'), l2: $q('h-l2'), l: $q('h-l') };
+    Object.values(els).forEach(e => e.classList.remove('cell-ok', 'cell-bad', 'cell-near'));
+    $q('ex-group').classList.remove('cell-ok', 'cell-bad');
+    const u1 = parseLim(els.l1.value), u2 = parseLim(els.l2.value), uL = parseLim(els.l.value);
+    const isNum = (v) => typeof v === 'number' && !isNaN(v);
+    let incomplete = false, dneInSide = false;
+    if (!isNum(u1)) { els.l1.classList.add('cell-bad'); incomplete = true; if (u1 === 'DNE') dneInSide = true; }
+    if (!isNum(u2)) { els.l2.classList.add('cell-bad'); incomplete = true; if (u2 === 'DNE') dneInSide = true; }
+    if (!isNum(uL) && uL !== 'DNE') { els.l.classList.add('cell-bad'); incomplete = true; }
+    if (!state.exSel) { $q('ex-group').classList.add('cell-bad'); incomplete = true; }
+    if (incomplete) {
+      state.hyp = (isNum(u1) || isNum(u2)) ? { l1: u1, l2: u2 } : null; draw();
+      setFeedback('warn', `<i class="fa-solid fa-pen mr-1.5"></i><strong>Lengkapi dulu.</strong> ${dneInSide ? 'Limit kiri dan kanan harus berupa angka atau ∞ / −∞; tulis &ldquo;tidak ada&rdquo; hanya pada kotak limit keseluruhan.' : 'Ada kotak yang kosong atau belum terbaca, atau pilihan Ada / Tidak Ada belum dipilih.'} Contoh penulisan: 3 &nbsp;•&nbsp; 7/2 &nbsp;•&nbsp; −∞`);
+      return;
+    }
+
+    const c1 = eqL(u1, T.L1), c2 = eqL(u2, T.L2);
+    const cEx = (state.exSel === 'ada') === T.exists;
+    const cL = T.exists ? (isNum(uL) && eqL(uL, T.L)) : uL === 'DNE';
+    els.l1.classList.add(c1 ? 'cell-ok' : negEq(u1, T.L1) ? 'cell-near' : 'cell-bad');
+    els.l2.classList.add(c2 ? 'cell-ok' : negEq(u2, T.L2) ? 'cell-near' : 'cell-bad');
+    $q('ex-group').classList.add(cEx ? 'cell-ok' : 'cell-bad');
+    els.l.classList.add(cL ? 'cell-ok' : (T.exists && isNum(uL) && negEq(uL, T.L)) ? 'cell-near' : 'cell-bad');
+    state.hyp = { l1: u1, l2: u2 }; draw();
+
+    if (c1 && c2 && cEx && cL) {
+      const eq = T.exists ? `$\\lim_{x\\to ${a}^-} f(x) = \\lim_{x\\to ${a}^+} f(x) = ${texNum(T.L)}$, sehingga $\\lim_{x\\to ${a}} f(x) = ${texNum(T.L)}$`
+                          : `$L_1 = ${texNum(T.L1)} \\ne L_2 = ${texNum(T.L2)}$, sehingga $\\lim_{x\\to ${a}} f(x)$ tidak ada`;
+      setFeedback('ok', `<i class="fa-solid fa-circle-check mr-1.5 text-emerald-600"></i><strong class="text-emerald-900">Luar biasa! Hipotesismu tepat.</strong> Prediksi oranye berada tepat di ujung grafik.<div class="mt-2 text-sm">${eq}</div><div class="mt-1 text-[11px]">Coba ganti nilai $a$ atau fungsi, lalu bandingkan hasilnya.</div>`);
+      markStepDone(3); return;
+    }
+
+    const lines = [];
+    const degVal = [u1, u2, uL].find(v => isNum(v) && (Math.abs(v - PI / 180) < 0.0015 || Math.abs(v - 180 / PI) < 0.05) && !eqL(v, T.L1) && !eqL(v, T.L2));
+    const degHit = degVal !== undefined;
+    if (degHit) lines.push(`<i class="fa-solid fa-ruler-combined mr-1"></i><strong>Miskonsepsi derajat vs radian.</strong> Jawabanmu bernilai ${fmt(degVal, 4)}. Ini ciri perhitungan dalam <strong>mode derajat (°)</strong>. Dalam kalkulus limit, sudut wajib dalam <strong>radian</strong> (π rad = 180°). Ubah kalkulator ke mode RAD lalu hitung ulang.`);
+    if (T.exists && T.fa === null && uL === 'DNE') lines.push(`<i class="fa-solid fa-circle-question mr-1"></i>Kamu menulis &ldquo;tidak ada&rdquo; karena $f(${a})$ tak terdefinisi. Ingat: limit melihat perilaku di <strong>sekitar</strong> $x = ${a}$, bukan tepat di $x = ${a}$!`);
+    const side = (nm, ok, u, t) => {
+      if (ok) return;
+      if (negEq(u, t)) lines.push(`<i class="fa-solid fa-plus-minus mr-1"></i>${nm}: besarnya tepat, tetapi <strong>tandanya (+/−) berlawanan</strong>.`);
+      else if (!isFinite(t) && isFinite(u)) lines.push(`<i class="fa-solid fa-infinity mr-1"></i>${nm}: pada sisi ini $f(x)$ <strong>membesar tanpa batas</strong>. Tulis ∞ atau −∞ (tanda mengikuti arah), bukan angka sampel.`);
+      else if (isFinite(t) && !isFinite(u)) lines.push(`<i class="fa-solid fa-ruler mr-1"></i>${nm}: nilai $f(x)$ pada sisi ini <strong>tidak membesar tanpa batas</strong>; ia menuju bilangan tertentu.`);
+      else if (T.fa !== null && eqL(u, T.fa) && !eqL(T.fa, t)) lines.push(`<i class="fa-solid fa-circle-xmark mr-1"></i>${nm}: kamu memasukkan <strong>nilai fungsi $f(${a}) = ${texNum(T.fa)}$</strong>. Limit tidak sama dengan $f(a)$; baca nilai yang <em>didekati</em> pelacak.`);
+      else lines.push(`<i class="fa-solid fa-circle-xmark mr-1"></i>${nm}: belum sesuai. Bandingkan baris Δx terkecil pada tabel.`);
+    };
+    if (!c1 && !c2 && T.L1 !== T.L2 && eqL(u1, T.L2) && eqL(u2, T.L1)) lines.push(`<i class="fa-solid fa-arrows-left-right mr-1"></i>Limit kiri dan kanan kemungkinan <strong>tertukar</strong>: kiri memakai $x \\lt a$, kanan memakai $x \\gt a$.`);
+    else { side('Limit kiri ($L_1$)', c1, u1, T.L1); side('Limit kanan ($L_2$)', c2, u2, T.L2); }
+    if (!cEx) {
+      if (state.exSel === 'tidak' && T.exists) lines.push(`<i class="fa-solid fa-scale-balanced mr-1"></i>Limit <strong>ada</strong> bila $L_1 = L_2$ (sama-sama bilangan yang sama).${T.fa === null ? ` Ingat: $f(${a})$ tidak terdefinisi <strong>tidak</strong> berarti limit tidak ada.` : ''}`);
+      else lines.push(`<i class="fa-solid fa-scale-balanced mr-1"></i>Limit <strong>tidak ada</strong> bila $L_1 \\ne L_2$ atau nilainya tak hingga berlawanan arah.`);
+    }
+    if (isNum(u1) && isNum(u2) && !eqL(u1, u2) && state.exSel === 'ada') lines.push(`<i class="fa-solid fa-triangle-exclamation mr-1"></i>Menurut isianmu sendiri $L_1 \\ne L_2$, jadi limitnya seharusnya <strong>tidak ada</strong>.`);
+    if (!cL && cEx) lines.push(T.exists ? `<i class="fa-solid fa-circle-xmark mr-1"></i>Nilai limit keseluruhan belum tepat. Jika limit ada, nilainya sama dengan $L_1$ dan $L_2$${T.fa === null || (T.fa !== null && !eqL(T.fa, T.L)) ? ` (bukan $f(${a})$)` : ''}.` : `<i class="fa-solid fa-circle-xmark mr-1"></i>Karena limit tidak ada, tulis &ldquo;tidak ada&rdquo; pada kotak limit keseluruhan.`);
+    const n = [c1, c2, cEx, cL].filter(Boolean).length;
+    const tn = degHit ? 'amber' : 'rose';
+    setFeedback(degHit ? 'warn' : 'bad', `<i class="fa-solid fa-triangle-exclamation mr-1.5 text-${tn}-600"></i><strong class="text-${tn}-900">Belum tepat.</strong> ${n} dari 4 isian sudah benar (hijau).<div class="mt-2 space-y-1.5 text-left text-[11px] text-${tn}-900">${lines.map(l => `<p>${l}</p>`).join('')}</div><div class="mt-2 text-[11px] text-${tn}-900 border-t border-${tn}-200 pt-1.5">Petunjuk: geser penggeser Δx sampai kecil, lalu bandingkan <strong>ketinggian</strong> pelacak biru dan hijau. Pakai juga Asisten Penemuan.</div>`);
+  }
+
+  // ---------- Stepper ----------
+  function updateStepper() {
+    for (let n = 1; n <= 4; n++) {
+      const body = $q('step-body-' + n); if (!body) return;
+      const active = steps.active === n, done = steps.done[n];
+      body.classList.toggle('hidden', !active);
+      const head = $q('step-head-' + n); head.setAttribute('aria-expanded', String(active));
+      if (active) head.setAttribute('aria-current', 'step'); else head.removeAttribute('aria-current');
+      const badge = $q('step-badge-' + n);
+      badge.innerHTML = done ? '<i class="fa-solid fa-check"></i>' : String(n);
+      badge.className = 'w-7 h-7 rounded-full flex items-center justify-center text-xs font-black shrink-0 ' + (done ? 'bg-emerald-500 text-white' : active ? 'bg-sky-600 text-white' : 'bg-slate-200 text-slate-500');
+      $q('step-' + n).className = 'shrink-0 rounded-2xl border overflow-hidden ' + (active ? 'border-sky-300 bg-white shadow-sm' : 'border-slate-200 bg-white/60');
+      $q('step-chev-' + n).className = 'fa-solid text-slate-400 text-xs ' + (active ? 'fa-chevron-up' : 'fa-chevron-down');
+    }
+    const slot = $q('pattern-slot-' + (steps.active === 2 ? 2 : steps.active === 3 ? 3 : 1)), card = $q('pattern-card');
+    if (slot && card && card.parentElement !== slot) slot.appendChild(card);
+    $q('step3-next-label').innerText = steps.done[3] ? 'Lanjut: Animasi' : 'Lihat animasi dulu';
+    const c = $q('step4-concl'); if (c && state.revealed) { c.classList.remove('hidden'); }
+  }
+  function goToStep(n) {
+    steps.active = n; updateStepper();
+    if (n === 3) updatePredictionSummary();
+    if (n === 2) $q('step2-warn').classList.add('hidden');
+    if (n === 4 && state.revealed) { updateConclusion(); $q('step4-concl').classList.remove('hidden'); }
+    const head = $q('step-head-' + n); if (head && head.scrollIntoView) head.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+  function markStepDone(n) {
+    steps.done[n] = true;
+    if (n === 4) { updateConclusion(); $q('step4-concl').classList.remove('hidden'); }
+    updateStepper();
+  }
+  function resetSteps() { steps.active = 1; steps.done = [false, false, false, false, false]; const w = $q('step2-warn'); if (w) w.classList.add('hidden'); updateStepper(); }
+  function restartSteps() { stopAnimation(false); anim.u = 0; state.revealed = false; resetHypothesis(true); updateAnimControls(); draw(); goToStep(1); }
+  function completeStep(n) {
+    if (n === 1) { markStepDone(1); goToStep(2); return; }
+    if (n === 2) {
+      const bad = !isFinite(1) || [parseLim($q('h-l1').value), parseLim($q('h-l2').value)].some(v => typeof v !== 'number' || isNaN(v)) ||
+        (() => { const v = parseLim($q('h-l').value); return !(typeof v === 'number' ? !isNaN(v) : v === 'DNE'); })() || !state.exSel;
+      const warn = $q('step2-warn');
+      if (bad) { warn.innerText = 'Isi limit kiri, limit kanan, pilihan Ada/Tidak Ada, dan limit keseluruhan dengan benar terlebih dahulu.'; warn.classList.remove('hidden'); return; }
+      warn.classList.add('hidden'); markStepDone(2); goToStep(3);
+    }
+  }
+  function playFromStep() {
+    if (window.innerWidth < 1024) switchMobileLabTab('canvas');
+    setTimeout(() => playAnimation(true), 60);
+  }
+  function updatePredictionSummary() {
+    const box = $q('pred-summary'), a = aTex(state.k);
+    const t = (id) => { const v = parseLim($q(id).value); if (v === 'DNE') return '\\text{tidak ada}'; return typeof v === 'number' && !isNaN(v) ? texNum(v) : '\\square'; };
+    const ex = state.exSel === 'ada' ? '\\text{ada}' : state.exSel === 'tidak' ? '\\text{tidak ada}' : '\\square';
+    box.innerHTML = `$\\lim_{x\\to ${a}^-} f(x) = ${t('h-l1')},\\quad \\lim_{x\\to ${a}^+} f(x) = ${t('h-l2')}$<br>$\\text{limit}\\ ${ex},\\quad \\lim_{x\\to ${a}} f(x) = ${t('h-l')}$`;
+    renderMath(box);
+  }
+
+  // ---------- Asisten ----------
+  const asst = { open: false, tab: 'pola', collapsed: false, placed: false, hint: {} };
+  const ASST_ON = 'flex-1 py-2 text-[11px] font-black text-sky-700 bg-white border-b-2 border-sky-600';
+  const ASST_OFF = 'flex-1 py-2 text-[11px] font-semibold text-slate-500 border-b-2 border-transparent hover:text-slate-700';
+  const isMobileLayout = () => window.innerWidth < 1024;
+  function labIsVisible() { const app = $q('app-container'), lab = $q('tab-lab'); return app && !app.classList.contains('hidden') && lab && !lab.classList.contains('hidden'); }
+  function syncAssistantVisibility() {
+    const win = $q('assistant-win'), fab = $q('assistant-fab'); if (!win || !fab) return;
+    const lab = labIsVisible();
+    win.classList.toggle('hidden', !(lab && asst.open)); win.classList.toggle('flex', lab && asst.open);
+    fab.classList.toggle('hidden', !(lab && !asst.open)); fab.classList.toggle('flex', lab && !asst.open);
+    if (lab && asst.open) clampAssistant();
+  }
+  function openAssistant(tab) {
+    if (tab) asst.tab = tab === 'notasi' ? 'notasi' : 'pola';
+    asst.open = true; asst.collapsed = false; applyCollapse(); syncAssistantVisibility();
+    if (!asst.placed && !isMobileLayout()) { placeAssistantDefault(); asst.placed = true; }
+    renderAssistant();
+  }
+  function closeAssistant() { asst.open = false; $q('assistant-win').style.transform = ''; syncAssistantVisibility(); }
+  function applyCollapse() { $q('assistant-body').classList.toggle('hidden', asst.collapsed); $q('asst-collapse-icon').className = asst.collapsed ? 'fa-solid fa-chevron-up' : 'fa-solid fa-minus'; }
+  function toggleAssistantCollapse() { asst.collapsed = !asst.collapsed; applyCollapse(); clampAssistant(); }
+  function setAssistantTab(t) { asst.tab = t; renderAssistant(); }
+  function renderAssistant() {
+    if (!asst.open) return;
+    ['pola', 'notasi'].forEach(t => { $q('asst-pane-' + t).classList.toggle('hidden', asst.tab !== t); $q('asst-tab-' + t).className = asst.tab === t ? ASST_ON : ASST_OFF; });
+    updateAssistantContent(); renderMath($q('assistant-win')); clampAssistant();
+  }
+  function revealHint2() { asst.hint[state.fn] = 2; updateAssistantContent(); }
+  function updateAssistantContent() {
+    const k = state.k, id = state.fn, T = truth(), A = aTex(k);
+    const tx = (v) => (v === null || v === undefined) ? '' : texNum(v);
+    const smooth = (what) => [`Di sekitar $x = ${A}$ grafik ${what} <strong>mulus</strong>: tidak ada lubang, lompatan, atau asimptot. Bandingkan nilai $f$ dari kiri dan kanan pada baris Δx terkecil, lalu hitung juga $f(${A})$.`, ''];
+    let h1 = '', h2 = '';
+    if (id === 'trig_sin') {
+      h1 = smooth('sinus')[0];
+      h2 = `Sinus kontinu di setiap titik, sehingga $\\lim_{x\\to ${A}} \\sin x = \\sin ${A} = ${tx(T.L)}$. Substitusikan langsung (mode radian).`;
+    } else if (id === 'trig_fundamental_sin') {
+      if (k === 0) {
+        h1 = `Perhatikan <strong>lingkaran kosong</strong> di $(0, 1)$: $f(0) = \\frac{\\sin 0}{0}$ tidak terdefinisi. Namun lihat baris Δx = 0,001: nilai $\\frac{\\sin x}{x}$ dari kiri dan kanan mendekati bilangan bulat berapa?`;
+        h2 = `Walau penyebutnya $0$ saat $x = 0$, di sekitar $0$ nilai $\\sin x$ dan $x$ hampir sama (laju identik, dalam radian), sehingga rasionya menuju $1$. Jadi $\\lim_{x\\to 0}\\frac{\\sin x}{x} = 1$. Dalam mode derajat hasilnya $\\approx 0{,}0175$: pastikan <strong>radian</strong>.`;
+      } else {
+        h1 = smooth('$\\frac{\\sin x}{x}$')[0].replace('Di sekitar', 'Satu-satunya lubang ada di $x = 0$. Di sekitar');
+        h2 = `Karena kontinu di sini, substitusi langsung: $\\frac{\\sin ${A}}{${A}} = ${tx(T.L)}$. Coba $a = 0$ untuk titik istimewanya.`;
+      }
+    } else if (id === 'trig_fundamental_tan') {
+      if (k === 0) {
+        h1 = `Ada <strong>lubang</strong> di $(0, 1)$ dan $f(0)$ tak terdefinisi. Ke mana $\\frac{\\tan x}{x}$ menuju dari kiri dan kanan pada Δx kecil? Bandingkan dengan limit sinus.`;
+        h2 = `$\\dfrac{\\tan x}{x} = \\dfrac{\\sin x}{x}\\cdot\\dfrac{1}{\\cos x} \\to 1 \\cdot \\dfrac{1}{1} = 1$. Limitnya <strong>ada</strong> walaupun $f(0)$ tidak terdefinisi.`;
+      } else if (isPoleK(k)) {
+        h1 = `Di dekat $x = ${A}$ nilai $\\tan x$ membesar tanpa batas. Apakah pelacak biru naik atau turun? Bagaimana pelacak hijau?`;
+        h2 = `Di sini $\\cos x \\to 0$, sehingga $\\tan x$ berlawanan arah di kedua sisi ($+\\infty$ dari kiri, $-\\infty$ dari kanan). Setelah dibagi $x$ yang ${k > 0 ? 'positif' : 'negatif'}, diperoleh $L_1 = ${tx(T.L1)}$ dan $L_2 = ${tx(T.L2)}$. Karena berlawanan, limit <strong>tidak ada</strong>.`;
+      } else {
+        h1 = smooth('$\\frac{\\tan x}{x}$')[0];
+        h2 = `Fungsi kontinu di sini: $\\frac{\\tan ${A}}{${A}} = ${tx(T.L)}$.`;
+      }
+    } else if (id === 'trig_cos_transform') {
+      if (k === 0) {
+        h1 = `Ada lubang di $(0; 0{,}5)$ dan $f(0) = \\frac{0}{0}$ tak terdefinisi. Lihat Δx kecil: ke desimal berapa $f(x)$ menuju dari kiri dan kanan?`;
+        h2 = `Pakai $1 - \\cos x = 2\\sin^2\\frac{x}{2}$: $\\frac{1-\\cos x}{x^2} = \\frac{1}{2}\\left(\\frac{\\sin(x/2)}{x/2}\\right)^2 \\to \\frac{1}{2}\\cdot 1^2 = \\frac{1}{2}$.`;
+      } else {
+        h1 = smooth('$\\frac{1-\\cos x}{x^2}$')[0];
+        h2 = `Substitusi langsung: $\\frac{1-\\cos ${A}}{\\left(${A}\\right)^2} = ${tx(T.L)}$.`;
+      }
+    } else if (id === 'trig_piecewise') {
+      if (k === 0) {
+        h1 = `Grafik <strong>melompat</strong> di $x = 0$: dari kiri dipakai $\\sin x$, dari kanan $\\cos x$. Berapa tinggi yang didekati pelacak biru dan hijau?`;
+        h2 = `Kiri: $\\sin 0 = 0$. Kanan: $\\cos 0 = 1$. Karena $0 \\ne 1$, limit <strong>tidak ada</strong>, sedangkan $f(0) = 1$.`;
+      } else {
+        h1 = smooth('piecewise ini')[0];
+        h2 = `Di sini berlaku rumus $${k < 0 ? '\\sin x' : '\\cos x'}$, jadi $\\lim_{x\\to ${A}} f(x) = ${k < 0 ? '\\sin' : '\\cos'} ${A} = ${tx(T.L)}$.`;
+      }
+    } else if (id === 'trig_tan_asy') {
+      if (isPoleK(k)) {
+        h1 = `Saat Δx makin kecil, $\\tan x$ makin besar (bukan mendekati satu angka). Apakah pelacak dari kiri naik atau turun? Bagaimana dari kanan?`;
+        h2 = `$\\tan x = \\frac{\\sin x}{\\cos x}$. Di dekat $x = ${A}$, $\\cos x \\to 0$ dan $\\sin x \\to \\pm 1$. Dari kiri $\\tan x \\to +\\infty$, dari kanan $\\tan x \\to -\\infty$. Karena berlawanan, limit <strong>tidak ada</strong>; garis $x = ${A}$ adalah asimptot vertikal.`;
+      } else {
+        h1 = smooth('tangen')[0].replace('Di sekitar', 'Asimptot hanya ada di $x = \\frac{\\pi}{2} + n\\pi$. Di sekitar');
+        h2 = `Kontinu di sini: $\\lim_{x\\to ${A}} \\tan x = \\tan ${A} = ${tx(T.L)}$. Coba preset $\\frac{\\pi}{2}$.`;
+      }
+    }
+    $q('asst-fn-name').innerText = FN().name;
+    $q('hint-1').innerHTML = h1; $q('hint-2').innerHTML = h2;
+    const lvl = asst.hint[state.fn] || 1;
+    $q('hint-2-lock').classList.toggle('hidden', lvl >= 2); $q('hint-2-box').classList.toggle('hidden', lvl < 2);
+    if (asst.open) renderMath($q('asst-pane-pola'));
+  }
+  function placeAssistantDefault() {
+    const win = $q('assistant-win'), cr = $q('lab-canvas').parentElement.getBoundingClientRect(), h = win.offsetHeight;
+    win.style.left = Math.max(8, cr.left + 12) + 'px'; win.style.top = Math.max(8, cr.bottom - h - 12) + 'px'; clampAssistant();
+  }
+  function clampAssistant() {
+    if (isMobileLayout()) return;
+    const win = $q('assistant-win'); if (!win || win.classList.contains('hidden')) return;
+    const r = win.getBoundingClientRect();
+    win.style.left = Math.min(Math.max(r.left, 0), Math.max(0, window.innerWidth - r.width)) + 'px';
+    win.style.top = Math.min(Math.max(r.top, 0), Math.max(0, window.innerHeight - 44)) + 'px';
+  }
+  function initAssistant() {
+    const win = $q('assistant-win'), head = $q('assistant-head');
+    let mode = null, sx = 0, sy = 0, ox = 0, oy = 0, dy = 0;
+    head.addEventListener('pointerdown', (e) => {
+      if (e.target.closest('button')) return;
+      head.setPointerCapture(e.pointerId); sx = e.clientX; sy = e.clientY; dy = 0;
+      if (isMobileLayout()) mode = 'sheet'; else { const r = win.getBoundingClientRect(); ox = r.left; oy = r.top; mode = 'move'; }
+      win.classList.add('dragging');
+    });
+    head.addEventListener('pointermove', (e) => {
+      if (!mode) return;
+      if (mode === 'move') {
+        win.style.left = Math.min(Math.max(ox + e.clientX - sx, 0), Math.max(0, window.innerWidth - win.offsetWidth)) + 'px';
+        win.style.top = Math.min(Math.max(oy + e.clientY - sy, 0), Math.max(0, window.innerHeight - 44)) + 'px';
+      } else { dy = Math.max(0, e.clientY - sy); win.style.transform = `translateY(${dy}px)`; }
+    });
+    const end = () => { if (!mode) return; win.classList.remove('dragging'); if (mode === 'sheet') { if (dy > 80) closeAssistant(); else win.style.transform = ''; } mode = null; };
+    head.addEventListener('pointerup', end); head.addEventListener('pointercancel', end);
+    document.addEventListener('keydown', (e) => {
+      if (e.key !== 'Escape' || !asst.open) return;
+      const modalOpen = ['info-modal', 'guide-modal'].some(id => { const m = $q(id); return m && !m.classList.contains('hidden'); });
+      if (!modalOpen) closeAssistant();
+    });
+    window.addEventListener('resize', () => { win.style.transform = ''; clampAssistant(); });
+  }
+
+  /* =====================================================================
+     EVALUASI (12 soal)
+     ===================================================================== */
+  const quizData = [
+    { q: String.raw`1. Nilai $\lim_{x\to 0}\dfrac{\sin x}{x}$ (x dalam radian) adalah...`,
+      options: ['0', '1', String.raw`$\frac{\pi}{180}$`, 'tidak ada'], correct: 1, plain: true,
+      exp: String.raw`Dalam radian $\sin x \approx x$ untuk $x$ kecil, sehingga $\frac{\sin x}{x} \to 1$. Nilai $\frac{\pi}{180}$ hanya muncul bila $x$ diukur dalam derajat.` },
+    { q: String.raw`2. Nilai $\lim_{x\to 0}\dfrac{\sin 3x}{x}$ adalah...`,
+      options: ['1', '3', String.raw`$\frac{1}{3}$`, '0'], correct: 1, plain: true,
+      exp: String.raw`$\frac{\sin 3x}{x} = 3\cdot\frac{\sin 3x}{3x} \to 3\cdot 1 = 3$.` },
+    { q: String.raw`3. Diketahui $f(x) = \begin{cases} \sin x, & x \lt 0 \\ \cos x, & x \ge 0 \end{cases}$. Nilai $\lim_{x\to 0^+} f(x)$ adalah...`,
+      options: ['0', '1', '−1', 'tidak ada'], correct: 1, plain: true,
+      exp: String.raw`Dari kanan ($x \gt 0$) dipakai $\cos x$, sehingga limitnya $\cos 0 = 1$.` },
+    { q: String.raw`4. Nilai $\lim_{x\to \frac{\pi}{2}^-}\tan x$ adalah...`,
+      options: ['+∞', '−∞', '0', '1'], correct: 0, plain: true,
+      exp: String.raw`Dari kiri $\cos x$ positif dan menuju $0$ sedangkan $\sin x \to 1$, sehingga $\tan x = \frac{\sin x}{\cos x} \to +\infty$.` },
+    { type: 'fill', q: String.raw`5. Tentukan nilai $\lim_{x\to 0}\dfrac{\tan 4x}{x}$. (Isi dengan angka)`,
+      answer: 4, exp: String.raw`$\frac{\tan 4x}{x} = 4\cdot\frac{\tan 4x}{4x} \to 4\cdot 1 = 4$.` },
+    { type: 'fill', q: String.raw`6. Tentukan nilai $\lim_{x\to 0}\dfrac{1-\cos x}{x^2}$. (Isi dengan angka, boleh 1/2 atau 0,5)`,
+      answer: 0.5, exp: String.raw`$1-\cos x = 2\sin^2\frac{x}{2}$, sehingga $\frac{1-\cos x}{x^2} = \frac{1}{2}\left(\frac{\sin(x/2)}{x/2}\right)^2 \to \frac{1}{2}$.` },
+    { type: 'multi', q: String.raw`7. Untuk $f(x) = \dfrac{\sin x}{x}$ dengan $x \to 0$, pilih <strong>semua</strong> pernyataan yang <strong>benar</strong>!`,
+      options: [String.raw`$f(0)$ tidak terdefinisi.`, String.raw`Limit kirinya bernilai 1.`, String.raw`Limit kanannya bernilai 1.`,
+                String.raw`Limitnya tidak ada karena $f(0)$ tidak terdefinisi.`, String.raw`$\lim_{x\to 0} f(x) = f(0)$.`],
+      correct: [0, 1, 2],
+      exp: String.raw`$L_1 = L_2 = 1$ sehingga limitnya $1$. Pernyataan 4 salah: limit hanya melihat sekitar $0$, bukan $f(0)$. Pernyataan 5 salah karena $f(0)$ tidak ada.` },
+    { type: 'multi', q: String.raw`8. Diketahui $f(x) = \begin{cases} \sin x, & x \lt 0 \\ \cos x, & x \ge 0 \end{cases}$. Pilih <strong>semua</strong> pernyataan yang <strong>benar</strong>!`,
+      options: [String.raw`$\lim_{x\to 0^-} f(x) = 0$.`, String.raw`$\lim_{x\to 0^+} f(x) = 1$.`, String.raw`$f(0) = 1$.`,
+                String.raw`$\lim_{x\to 0} f(x) = 1$.`, String.raw`Grafiknya melompat di $x = 0$.`],
+      correct: [0, 1, 2, 4],
+      exp: String.raw`$L_1 = \sin 0 = 0$, $L_2 = \cos 0 = 1$, dan $f(0) = 1$. Karena $L_1 \ne L_2$, $\lim_{x\to 0} f(x)$ tidak ada (pernyataan 4 salah) dan grafik melompat.` },
+    { type: 'tf', q: String.raw`9. Tentukan setiap pernyataan berikut <strong>Benar</strong> atau <strong>Salah</strong>!`,
+      statements: [
+        { t: String.raw`Rumus $\lim_{x\to 0}\frac{\sin x}{x}=1$ berlaku bila $x$ diukur dalam radian.`, a: true },
+        { t: String.raw`Jika $\lim_{x\to a} f(x)$ ada, maka $f(a)$ pasti terdefinisi.`, a: false },
+        { t: String.raw`Bila $x$ dalam derajat, $\frac{\sin x}{x}$ menuju $\frac{\pi}{180}$ saat $x \to 0$.`, a: true }],
+      exp: String.raw`Rumus dasar mensyaratkan radian. Limit boleh ada walau $f(a)$ tidak terdefinisi (fungsi berlubang). Dalam derajat, $\sin x^\circ \approx \frac{\pi}{180}x$.` },
+    { type: 'tf', q: String.raw`10. Untuk $f(x) = \tan x$, tentukan setiap pernyataan <strong>Benar</strong> atau <strong>Salah</strong>!`,
+      statements: [
+        { t: String.raw`$\lim_{x\to \frac{\pi}{2}^-} \tan x = +\infty$.`, a: true },
+        { t: String.raw`$\lim_{x\to \frac{\pi}{2}^+} \tan x = +\infty$.`, a: false },
+        { t: String.raw`Garis $x = \frac{\pi}{2}$ adalah asimptot vertikal grafik $\tan x$.`, a: true }],
+      exp: String.raw`Dari kiri $\cos x \to 0^+$ sehingga $\tan x \to +\infty$; dari kanan $\cos x \to 0^-$ sehingga $\tan x \to -\infty$. Garis $x = \frac{\pi}{2}$ adalah asimptot vertikal.` },
+    { type: 'match', q: String.raw`11. <strong>Jodohkan</strong> setiap limit dengan nilainya. Tersedia <strong>5 nilai</strong> untuk 4 limit, sehingga <strong>satu nilai adalah pengecoh</strong>!`,
+      premises: [String.raw`$\lim_{x\to 0}\dfrac{\sin 5x}{x}$`, String.raw`$\lim_{x\to 0}\dfrac{\tan 2x}{x}$`, String.raw`$\lim_{x\to 0}\dfrac{1-\cos x}{x^2}$`, String.raw`$\lim_{x\to \frac{\pi}{2}^-}\tan x$`],
+      statements: ['$5$', '$2$', String.raw`$\frac{1}{2}$`, String.raw`$+\infty$`, String.raw`$-\infty$`],
+      answer: [0, 1, 2, 3],
+      exp: String.raw`$\frac{\sin 5x}{x} \to 5$; $\frac{\tan 2x}{x} \to 2$; $\frac{1-\cos x}{x^2} \to \frac{1}{2}$; dari kiri $\tan x \to +\infty$. Nilai $-\infty$ adalah pengecoh.` },
+    { q: String.raw`12. Seorang siswa menghitung $\frac{\sin x}{x}$ untuk $x = 0{,}001$ dan memperoleh $0{,}0174$. Kesimpulan yang <strong>tepat</strong> adalah...`,
+      options: [String.raw`$\lim_{x\to 0}\frac{\sin x}{x} = 0{,}0174$ karena hasil kalkulator selalu benar`, String.raw`Kalkulator berada pada mode derajat; dalam radian nilainya mendekati $1$, jadi limitnya $1$`,
+                String.raw`Limitnya tidak ada karena hasilnya berbeda dari $1$`, String.raw`Limitnya $0$ karena $\sin 0 = 0$`], correct: 1,
+      exp: String.raw`Nilai $0{,}0174 \approx \frac{\pi}{180}$ ciri mode derajat. Dalam kalkulus, sudut harus dalam radian; hasil yang benar mendekati $1$.` }
+  ];
+  
+const QUIZ_TYPES = { single: 'Pilihan Ganda', fill: 'Isian', multi: 'Pilihan Ganda Kompleks', tf: 'Benar / Salah', match: 'Menjodohkan' };
+  const QUIZ_TOPICS = ['Limit fundamental sinus', 'Limit sin ax', 'Limit kanan terpotong', 'Limit tak hingga tan', 'Limit tan ax', 'Limit bentuk 1-cos',
+    'Limit vs nilai fungsi', 'Eksistensi limit terpotong', 'Radian dan eksistensi', 'Asimptot tangen', 'Menjodohkan limit', 'Radian vs derajat'];
+  const OPT_LETTERS = ['A', 'B', 'C', 'D', 'E'];
+  const quizRuntime = {};
+  function shuffleArray(arr) { const r = arr.slice(); for (let i = r.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [r[i], r[j]] = [r[j], r[i]]; } return r; }
+
+  let evalStudent = { nama: '', kelas: '', sekolah: '' }, evalState = null;
+  function newEvalSession() { return { current: 0, sent: quizData.map(() => false), results: quizData.map(() => null), startedAt: null, finishedAt: null }; }
+  function initEvaluation() {
+    evalState = newEvalSession(); $q('quiz-container').innerHTML = '';
+    $q('eval-nama').value = evalStudent.nama; $q('eval-kelas').value = evalStudent.kelas; $q('eval-sekolah').value = evalStudent.sekolah;
+    $q('eval-intro-error').classList.add('hidden'); setEvalPhase('intro');
+  }
+  function setEvalPhase(phase) {
+    $q('eval-intro').classList.toggle('hidden', phase !== 'intro'); $q('eval-quiz').classList.toggle('hidden', phase !== 'quiz'); $q('eval-recap').classList.toggle('hidden', phase !== 'recap');
+    const nav = $q('eval-nav'); nav.classList.toggle('hidden', phase !== 'quiz'); nav.classList.toggle('flex', phase === 'quiz');
+    $q('tab-evaluasi').scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  function startEvaluation() {
+    const nama = $q('eval-nama').value.trim(), err = $q('eval-intro-error');
+    if (nama.length < 2) { err.innerText = 'Nama lengkap wajib diisi (minimal 2 huruf).'; err.classList.remove('hidden'); $q('eval-nama').focus(); return; }
+    err.classList.add('hidden');
+    evalStudent = { nama, kelas: $q('eval-kelas').value.trim(), sekolah: $q('eval-sekolah').value.trim() };
+    evalState = newEvalSession(); evalState.startedAt = new Date();
+    $q('eval-student-chip').innerText = evalStudent.nama + (evalStudent.kelas ? '  •  ' + evalStudent.kelas : '');
+    renderQuiz(); setEvalPhase('quiz'); goToQuestion(0);
+  }
+  function renderQuiz() {
+    const qc = $q('quiz-container'); qc.innerHTML = '';
+    const optCls = 'flex items-center gap-3 p-3 rounded-xl bg-slate-50 border border-slate-200 hover:border-sky-300 hover:bg-sky-50 cursor-pointer transition-colors text-sm font-medium';
+    quizData.forEach((q, idx) => {
+      const type = q.type || 'single', card = document.createElement('div');
+      card.id = `quiz-card-${idx}`; card.className = 'hidden bg-white p-6 rounded-2xl space-y-4 border border-slate-200 shadow-sm';
+      let body = '';
+      if (type === 'single') {
+        body = `<div class="space-y-2 pt-2">` + q.options.map((o, i) => `<label class="${optCls}"><input type="radio" name="quiz-${idx}" value="${i}" class="w-4 h-4 text-sky-600 border-gray-300"><span class="font-black text-slate-400 w-4">${OPT_LETTERS[i]}.</span><span class="text-slate-700 w-full">${q.plain ? o : o}</span></label>`).join('') + `</div>`;
+      } else if (type === 'fill') {
+        body = `<div class="pt-1"><input id="quiz-fill-${idx}" type="text" inputmode="decimal" autocomplete="off" placeholder="Jawabanmu" class="w-full sm:w-56 rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-sky-500"></div>`;
+      } else if (type === 'multi') {
+        body = `<p class="text-[11px] font-bold text-indigo-600"><i class="fa-regular fa-square-check mr-1"></i>Boleh lebih dari satu jawaban.</p><div class="space-y-2">` +
+          q.options.map((o, i) => `<label class="${optCls}"><input type="checkbox" name="quiz-${idx}" value="${i}" class="w-4 h-4 rounded text-sky-600 border-gray-300"><span class="font-black text-slate-400 w-4">${i + 1}.</span><span class="text-slate-700 w-full">${o}</span></label>`).join('') + `</div>`;
+      } else if (type === 'tf') {
+        body = `<div class="space-y-2">` + q.statements.map((st, s) => `
+          <div class="flex flex-col sm:flex-row sm:items-center gap-2 p-3 rounded-xl bg-slate-50 border border-slate-200 text-sm font-medium">
+            <span class="text-slate-700 flex-1">${s + 1}. ${st.t}</span>
+            <span class="flex gap-2 shrink-0">
+              <label class="relative px-3 py-1.5 rounded-lg border border-slate-300 bg-white cursor-pointer text-xs font-bold text-slate-600 hover:border-emerald-400 has-[:checked]:bg-emerald-100 has-[:checked]:border-emerald-500 has-[:checked]:text-emerald-800"><input type="radio" name="quiz-${idx}-${s}" value="true" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">Benar</label>
+              <label class="relative px-3 py-1.5 rounded-lg border border-slate-300 bg-white cursor-pointer text-xs font-bold text-slate-600 hover:border-rose-400 has-[:checked]:bg-rose-100 has-[:checked]:border-rose-500 has-[:checked]:text-rose-800"><input type="radio" name="quiz-${idx}-${s}" value="false" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">Salah</label>
+            </span></div>`).join('') + `</div>`;
+      } else if (type === 'match') {
+        const order = shuffleArray(q.statements.map((_, i) => i)); quizRuntime[idx] = { order };
+        const list = order.map((si, pos) => `<div class="flex gap-2 items-start text-sm"><span class="font-black text-sky-700 w-5 shrink-0">${OPT_LETTERS[pos]}.</span><span class="text-slate-700">${q.statements[si]}</span></div>`).join('');
+        const opts = `<option value="">Pilih...</option>` + order.map((si, pos) => `<option value="${si}">${OPT_LETTERS[pos]}</option>`).join('');
+        const rows = q.premises.map((p, pi) => `<div class="flex items-center gap-3 p-3 rounded-xl bg-slate-50 border border-slate-200 text-sm font-medium"><span class="text-slate-700 flex-1">${pi + 1}. ${p}</span><select id="quiz-${idx}-${pi}" class="w-24 shrink-0 rounded-lg border border-slate-300 bg-white py-1.5 px-2 text-sm font-bold text-sky-700 focus:outline-none focus:ring-1 focus:ring-sky-500">${opts}</select></div>`).join('');
+        body = `<div class="p-3 rounded-xl bg-sky-50 border border-sky-200 space-y-1.5"><p class="text-[11px] font-black text-sky-700 uppercase tracking-wide">Daftar nilai</p>${list}</div><div class="space-y-2">${rows}</div>`;
+      }
+      card.innerHTML = `
+        <div class="flex items-center justify-between gap-3"><span class="px-2.5 py-1 rounded-full bg-slate-100 text-slate-600 text-[10px] font-black uppercase tracking-wide">${QUIZ_TYPES[type]}</span><span class="text-[11px] font-bold text-slate-400">Soal ${idx + 1} dari ${quizData.length}</span></div>
+        <p class="font-bold text-sm sm:text-base text-slate-800 leading-relaxed">${q.q}</p>
+        ${body}
+        <div id="quiz-exp-${idx}" class="hidden mt-3 p-4 rounded-xl border border-slate-200 text-sm font-medium"></div>
+        <div class="flex items-center gap-3 pt-3 border-t border-slate-100">
+          <p id="quiz-warn-${idx}" class="hidden text-xs font-bold text-amber-600 flex-1"></p>
+          <span id="quiz-sent-${idx}" class="hidden ml-auto text-xs font-black text-emerald-700"><i class="fa-solid fa-lock mr-1"></i>Jawaban terkirim</span>
+          <button id="quiz-send-${idx}" onclick="sendAnswer(${idx})" class="ml-auto px-5 py-2.5 rounded-xl bg-gradient-to-r from-teal-500 to-emerald-600 hover:from-teal-600 hover:to-emerald-700 text-white font-bold text-sm shadow-md active:scale-95 transition-all"><i class="fa-solid fa-paper-plane mr-2"></i>Kirim Jawaban</button>
+        </div>`;
+      qc.appendChild(card);
+    });
+    renderMath(qc);
+  }
+  function goToQuestion(i) {
+    const n = quizData.length; i = Math.max(0, Math.min(n - 1, i)); evalState.current = i;
+    quizData.forEach((_, k) => { const c = $q('quiz-card-' + k); if (c) c.classList.toggle('hidden', k !== i); });
+    $q('eval-confirm').classList.add('hidden'); updateEvalNav(); $q('tab-evaluasi').scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  function updateEvalNav() {
+    const n = quizData.length, i = evalState.current, sent = evalState.sent.filter(Boolean).length;
+    $q('eval-prev').disabled = i === 0; $q('eval-page-indicator').innerText = `${i + 1} / ${n}`;
+    $q('eval-progress-text').innerText = `${sent} dari ${n} soal terkirim`;
+    $q('eval-next').innerHTML = i === n - 1 ? 'Selesai &amp; Lihat Rekap <i class="fa-solid fa-flag-checkered ml-1"></i>' : 'Selanjutnya <i class="fa-solid fa-chevron-right ml-1"></i>';
+    $q('eval-chips').innerHTML = quizData.map((_, k) => {
+      const s = evalState.sent[k], r = evalState.results[k];
+      let cls = 'w-9 h-9 rounded-lg border text-xs font-black transition-all ';
+      if (s) cls += r.frac === 1 ? 'bg-emerald-100 border-emerald-400 text-emerald-800' : r.frac > 0 ? 'bg-amber-100 border-amber-400 text-amber-800' : 'bg-rose-100 border-rose-400 text-rose-800';
+      else cls += 'bg-white border-slate-300 text-slate-500 hover:border-sky-400';
+      if (k === i) cls += ' ring-2 ring-sky-500 ring-offset-1';
+      return `<button onclick="goToQuestion(${k})" class="${cls}" title="Soal ${k + 1}">${k + 1}</button>`;
+    }).join('');
+  }
+  function evalPrev() { goToQuestion(evalState.current - 1); }
+  function evalNext() { if (evalState.current < quizData.length - 1) goToQuestion(evalState.current + 1); else finishEvaluation(); }
+
+  function isAnswerComplete(q, idx) {
+    const type = q.type || 'single';
+    if (type === 'single') return document.querySelector(`input[name="quiz-${idx}"]:checked`) ? { ok: true } : { ok: false, msg: 'Pilih satu jawaban dulu.' };
+    if (type === 'multi') return document.querySelector(`input[name="quiz-${idx}"]:checked`) ? { ok: true } : { ok: false, msg: 'Pilih minimal satu jawaban.' };
+    if (type === 'fill') { const v = parseLim($q('quiz-fill-' + idx).value); return (typeof v === 'number' && isFinite(v)) ? { ok: true } : { ok: false, msg: 'Isi dengan angka yang valid (mis. 4 atau 7/2).' }; }
+    if (type === 'tf') return q.statements.every((_, s) => document.querySelector(`input[name="quiz-${idx}-${s}"]:checked`)) ? { ok: true } : { ok: false, msg: 'Tentukan Benar atau Salah untuk semua pernyataan.' };
+    if (type === 'match') {
+      const vals = q.premises.map((_, p) => $q(`quiz-${idx}-${p}`).value);
+      if (vals.some(v => v === '')) return { ok: false, msg: 'Jodohkan semua limit terlebih dahulu.' };
+      if (new Set(vals).size !== vals.length) return { ok: false, msg: 'Satu nilai hanya boleh dipakai untuk satu limit.' };
+    }
+    return { ok: true };
+  }
+  function sendAnswer(idx) {
+    if (evalState.sent[idx]) return;
+    const q = quizData[idx], warn = $q('quiz-warn-' + idx), chk = isAnswerComplete(q, idx);
+    if (!chk.ok) { warn.innerText = chk.msg; warn.classList.remove('hidden'); return; }
+    warn.classList.add('hidden');
+    const g = gradeQuestion(q, idx); evalState.results[idx] = g; evalState.sent[idx] = true;
+    $q('quiz-card-' + idx).querySelectorAll('input, select').forEach(el => { el.disabled = true; });
+    $q('quiz-send-' + idx).classList.add('hidden'); $q('quiz-sent-' + idx).classList.remove('hidden');
+    const box = $q('quiz-exp-' + idx); box.classList.remove('hidden');
+    if (g.frac === 1) { box.innerHTML = `<span class="text-emerald-700 font-black block mb-1"><i class="fa-solid fa-circle-check mr-1"></i>Benar!</span>${g.detail}${q.exp}`; box.className = 'mt-3 p-4 rounded-xl border text-sm font-medium bg-emerald-50 border-emerald-200 text-emerald-900'; }
+    else if (g.frac > 0) { box.innerHTML = `<span class="text-amber-700 font-black block mb-1"><i class="fa-solid fa-circle-half-stroke mr-1"></i>Sebagian benar (${Math.round(g.frac * 100)}% poin soal ini).</span>${g.detail}${q.exp}`; box.className = 'mt-3 p-4 rounded-xl border text-sm font-medium bg-amber-50 border-amber-200 text-amber-900'; }
+    else { box.innerHTML = `<span class="text-rose-700 font-black block mb-1"><i class="fa-solid fa-circle-xmark mr-1"></i>Belum Tepat.</span>${g.detail}Pembahasan: ${q.exp}`; box.className = 'mt-3 p-4 rounded-xl border text-sm font-medium bg-rose-50 border-rose-200 text-rose-900'; }
+    renderMath(box); updateEvalNav();
+  }
+  function gradeQuestion(q, idx) {
+    const type = q.type || 'single';
+    const ok = (b) => b ? '<i class="fa-solid fa-circle-check text-emerald-600 mr-1"></i>' : '<i class="fa-solid fa-circle-xmark text-rose-600 mr-1"></i>';
+    if (type === 'single') {
+      const sel = document.querySelector(`input[name="quiz-${idx}"]:checked`);
+      return { frac: (sel && parseInt(sel.value) === q.correct) ? 1 : 0, detail: `<p class="mb-1">Kunci: <strong>${OPT_LETTERS[q.correct]}</strong>. Jawabanmu: <strong>${sel ? OPT_LETTERS[parseInt(sel.value)] : 'belum dijawab'}</strong>.</p>` };
+    }
+    if (type === 'fill') {
+      const v = parseLim($q('quiz-fill-' + idx).value);
+      return { frac: (typeof v === 'number' && Math.abs(v - q.answer) < 0.011) ? 1 : 0, detail: `<p class="mb-1">Kunci: <strong>${String(q.answer).replace('-', '−')}</strong>. Jawabanmu: <strong>${$q('quiz-fill-' + idx).value || 'kosong'}</strong>.</p>` };
+    }
+    if (type === 'multi') {
+      const picked = [...document.querySelectorAll(`input[name="quiz-${idx}"]:checked`)].map(e => parseInt(e.value)).sort();
+      const key = q.correct.slice().sort(); const same = picked.length === key.length && picked.every((v, i) => v === key[i]);
+      return { frac: same ? 1 : 0, detail: `<p class="mb-1">Kunci: pernyataan nomor <strong>${key.map(i => i + 1).join(', ')}</strong>. Jawabanmu: <strong>${picked.length ? picked.map(i => i + 1).join(', ') : 'tidak ada'}</strong>.</p>` };
+    }
+    if (type === 'tf') {
+      let right = 0;
+      const lines = q.statements.map((st, s) => {
+        const sel = document.querySelector(`input[name="quiz-${idx}-${s}"]:checked`), val = sel ? sel.value === 'true' : null, good = val === st.a;
+        if (good) right++;
+        return `<li>${ok(good)}Pernyataan ${s + 1}: kunci <strong>${st.a ? 'Benar' : 'Salah'}</strong>, jawabanmu <em>${val === null ? 'belum dijawab' : (val ? 'Benar' : 'Salah')}</em>.</li>`;
+      });
+      return { frac: right / q.statements.length, detail: `<ul class="space-y-0.5 mb-2">${lines.join('')}</ul>` };
+    }
+    const order = (quizRuntime[idx] || {}).order || q.statements.map((_, i) => i);
+    const letterOf = (si) => OPT_LETTERS[order.indexOf(si)];
+    let right = 0;
+    const lines = q.premises.map((p, pi) => {
+      const el = $q(`quiz-${idx}-${pi}`), chosen = el && el.value !== '' ? parseInt(el.value) : null, good = chosen === q.answer[pi];
+      if (good) right++;
+      return `<li>${ok(good)}${pi + 1}. kunci <strong>${letterOf(q.answer[pi])}</strong>, jawabanmu <em>${chosen === null ? 'belum dijawab' : letterOf(chosen)}</em>.</li>`;
+    });
+    const decoy = q.statements.map((_, i) => i).filter(i => !q.answer.includes(i)).map(letterOf).join(', ');
+    return { frac: right / q.premises.length, detail: `<ul class="space-y-0.5 mb-1">${lines.join('')}</ul><p class="mb-2">Nilai pengecoh: <strong>${decoy}</strong>.</p>` };
+  }
+  function goToFirstUnsent() { const i = evalState.sent.findIndex(v => !v); goToQuestion(i === -1 ? 0 : i); }
+  function finishEvaluation() {
+    const unsent = evalState.sent.filter(v => !v).length;
+    if (unsent > 0) { $q('eval-confirm-text').innerText = `Masih ada ${unsent} soal yang belum dikirim. Soal tersebut dinilai 0. Lanjut melihat rekap?`; $q('eval-confirm').classList.remove('hidden'); $q('eval-confirm').scrollIntoView({ behavior: 'smooth', block: 'center' }); return; }
+    showRecap();
+  }
+  function statusOf(i) {
+    if (!evalState.sent[i]) return { key: 'none', label: 'Belum dikirim', frac: 0 };
+    const f = evalState.results[i].frac;
+    if (f === 1) return { key: 'benar', label: 'Benar', frac: f };
+    if (f > 0) return { key: 'sebagian', label: `Sebagian (${Math.round(f * 100)}%)`, frac: f };
+    return { key: 'salah', label: 'Salah', frac: f };
+  }
+  function computeRecap() {
+    const n = quizData.length, w = 100 / n;
+    const rows = quizData.map((q, i) => { const st = statusOf(i); return { no: i + 1, type: QUIZ_TYPES[q.type || 'single'], topic: QUIZ_TOPICS[i] || '-', status: st, points: st.frac * w, max: w }; });
+    const total = rows.reduce((a, r) => a + r.points, 0), count = (k) => rows.filter(r => r.status.key === k).length;
+    return { rows, total, benar: count('benar'), sebagian: count('sebagian'), salah: count('salah'), none: count('none') };
+  }
+  const fmtPts = (v) => (Math.round(v * 10) / 10).toFixed(1).replace('.', ',');
+  const fmtTanggal = (d) => d.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) + ', ' + d.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+  function showRecap() {
+    evalState.finishedAt = new Date(); const r = computeRecap();
+    $q('rc-nama').innerText = evalStudent.nama; $q('rc-kelas').innerText = evalStudent.kelas || '-'; $q('rc-sekolah').innerText = evalStudent.sekolah || '-';
+    $q('rc-tanggal').innerText = fmtTanggal(evalState.finishedAt); $q('rc-skor').innerText = Math.round(r.total);
+    $q('rc-n-benar').innerText = r.benar; $q('rc-n-sebagian').innerText = r.sebagian; $q('rc-n-salah').innerText = r.salah; $q('rc-n-none').innerText = r.none;
+    const badge = { benar: 'bg-emerald-100 text-emerald-800', sebagian: 'bg-amber-100 text-amber-800', salah: 'bg-rose-100 text-rose-800', none: 'bg-slate-100 text-slate-600' };
+    $q('rc-body').innerHTML = r.rows.map(x => `<tr><td class="py-2.5 px-3 font-black text-slate-500">${x.no}</td><td class="py-2.5 px-3">${x.type}</td><td class="py-2.5 px-3">${x.topic}</td><td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded-full text-[11px] font-bold ${badge[x.status.key]}">${x.status.label}</span></td><td class="py-2.5 px-3 text-right font-mono">${fmtPts(x.points)} / ${fmtPts(x.max)}</td></tr>`).join('');
+    $q('recap-notice').classList.add('hidden'); setEvalPhase('recap');
+  }
+  function reviewQuestions() { setEvalPhase('quiz'); goToQuestion(0); }
+  function retryEvaluation() { $q('print-area').innerHTML = ''; initEvaluation(); }
+
+  function downloadRecapPdf() {
+    const notice = $q('recap-notice'), lib = window.jspdf && window.jspdf.jsPDF;
+    if (!lib) { notice.innerText = 'Pustaka PDF belum termuat. Periksa koneksi internet lalu muat ulang, atau gunakan "Cetak Pembahasan Lengkap" dan pilih Simpan sebagai PDF.'; notice.classList.remove('hidden'); return; }
+    notice.classList.add('hidden');
+    const r = computeRecap(), clean = (v) => String(v == null ? '' : v).replace(/[^\x20-\xFF]/g, '?');
+    const doc = new lib({ unit: 'mm', format: 'a4' }), W = 210, M = 15;
+    doc.setFillColor(2, 132, 199); doc.rect(0, 0, W, 30, 'F');
+    doc.setTextColor(255, 255, 255); doc.setFont('helvetica', 'bold'); doc.setFontSize(17); doc.text('Rekapitulasi Hasil Evaluasi', M, 14);
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(10); doc.text('TrigoLimitLab - Limit Fungsi Trigonometri', M, 22);
+    let y = 42; doc.setTextColor(30, 41, 59); doc.setFontSize(11);
+    [['Nama', evalStudent.nama], ['Kelas', evalStudent.kelas || '-'], ['Asal Sekolah', evalStudent.sekolah || '-'], ['Tanggal', fmtTanggal(evalState.finishedAt || new Date())]].forEach(([k, v]) => {
+      doc.setFont('helvetica', 'bold'); doc.text(k, M, y); doc.setFont('helvetica', 'normal'); doc.text(doc.splitTextToSize(': ' + clean(v), 105), M + 32, y); y += 7;
+    });
+    doc.setFillColor(240, 249, 255); doc.setDrawColor(125, 211, 252); doc.roundedRect(W - M - 52, 36, 52, 30, 3, 3, 'FD');
+    doc.setTextColor(3, 105, 161); doc.setFont('helvetica', 'bold'); doc.setFontSize(9); doc.text('SKOR AKHIR', W - M - 26, 44, { align: 'center' });
+    doc.setFontSize(24); doc.text(String(Math.round(r.total)), W - M - 26, 56, { align: 'center' });
+    doc.setFontSize(9); doc.setFont('helvetica', 'normal'); doc.text('dari 100', W - M - 26, 62, { align: 'center' });
+    y = 74; doc.setFontSize(10); doc.setTextColor(51, 65, 85);
+    doc.text(`Benar: ${r.benar}    Sebagian: ${r.sebagian}    Salah: ${r.salah}    Belum dikirim: ${r.none}`, M, y); y += 8;
+    const cols = [{ t: 'No', w: 10 }, { t: 'Tipe Soal', w: 46 }, { t: 'Topik', w: 56 }, { t: 'Status', w: 40 }, { t: 'Poin', w: 28 }], rowH = 9;
+    const header = () => { doc.setFillColor(226, 232, 240); doc.rect(M, y, 180, rowH, 'F'); doc.setFont('helvetica', 'bold'); doc.setFontSize(9.5); doc.setTextColor(30, 41, 59); let x = M; cols.forEach(c => { doc.text(c.t, x + 2, y + 6); x += c.w; }); y += rowH; };
+    const colorOf = { benar: [5, 150, 105], sebagian: [217, 119, 6], salah: [225, 29, 72], none: [100, 116, 139] };
+    header();
+    r.rows.forEach(row => {
+      if (y + rowH > 280) { doc.addPage(); y = 20; header(); }
+      doc.setDrawColor(203, 213, 225); doc.line(M, y + rowH, M + 180, y + rowH); doc.setFontSize(9.5);
+      let x = M;
+      [String(row.no), row.type, row.topic, row.status.label, `${fmtPts(row.points)} / ${fmtPts(row.max)}`].forEach((c, k) => {
+        if (k === 3) { doc.setFont('helvetica', 'bold'); doc.setTextColor(...colorOf[row.status.key]); } else { doc.setFont('helvetica', 'normal'); doc.setTextColor(51, 65, 85); }
+        doc.text(clean(c), x + 2, y + 6); x += cols[k].w;
+      });
+      y += rowH;
+    });
+    y += 8; doc.setFont('helvetica', 'italic'); doc.setFontSize(8.5); doc.setTextColor(100, 116, 139);
+    doc.text(doc.splitTextToSize('Catatan: soal benar/salah dan menjodohkan dinilai parsial sesuai jumlah butir yang benar. Pilihan ganda kompleks harus tepat seluruhnya. Soal yang belum dikirim dinilai 0.', 180), M, y);
+    doc.setFontSize(8); doc.text('Dihasilkan oleh TrigoLimitLab - Penemuan Terbimbing Limit Fungsi Trigonometri', M, 289);
+    const safe = clean(evalStudent.nama).replace(/[^A-Za-z0-9]+/g, '_').replace(/^_+|_+$/g, '') || 'Peserta';
+    doc.save(`Evaluasi_TrigoLimitLab_${safe}.pdf`);
+  }
+
+  function printQuestionBody(q, idx) {
+    const type = q.type || 'single';
+    if (type === 'single') return `<ol type="A" style="margin:4px 0 4px 20px">${q.options.map(o => `<li>${o}</li>`).join('')}</ol>`;
+    if (type === 'fill') return `<p style="margin:4px 0"><em>Soal isian.</em></p>`;
+    if (type === 'multi') return `<ol style="margin:4px 0 4px 20px">${q.options.map(o => `<li>${o}</li>`).join('')}</ol>`;
+    if (type === 'tf') return `<ol style="margin:4px 0 4px 20px">${q.statements.map(st => `<li>${st.t}</li>`).join('')}</ol>`;
+    const order = (quizRuntime[idx] || {}).order || q.statements.map((_, i) => i);
+    return `<p style="margin:4px 0 2px"><strong>Limit:</strong></p><ol style="margin:0 0 4px 20px">${q.premises.map(p => `<li>${p}</li>`).join('')}</ol><p style="margin:4px 0 2px"><strong>Nilai:</strong></p>${order.map((si, pos) => `<div>${OPT_LETTERS[pos]}. ${q.statements[si]}</div>`).join('')}`;
+  }
+  function printPembahasan() {
+    const r = computeRecap(), area = $q('print-area');
+    const head = `<h2 style="margin:0 0 4px">Rekapitulasi dan Pembahasan Evaluasi</h2><p style="margin:0 0 8px">TrigoLimitLab - Limit Fungsi Trigonometri</p>
+      <p style="margin:0"><strong>Nama:</strong> ${evalStudent.nama}</p><p style="margin:0"><strong>Kelas:</strong> ${evalStudent.kelas || '-'}</p>
+      <p style="margin:0"><strong>Asal Sekolah:</strong> ${evalStudent.sekolah || '-'}</p><p style="margin:0 0 8px"><strong>Tanggal:</strong> ${fmtTanggal(evalState.finishedAt || new Date())}</p>
+      <p style="margin:0 0 6px;font-size:15px"><strong>Skor Akhir: ${Math.round(r.total)} / 100</strong></p>
+      <table><thead><tr><th>No</th><th>Tipe</th><th>Topik</th><th>Status</th><th>Poin</th></tr></thead><tbody>
+      ${r.rows.map(x => `<tr><td>${x.no}</td><td>${x.type}</td><td>${x.topic}</td><td>${x.status.label}</td><td>${fmtPts(x.points)} / ${fmtPts(x.max)}</td></tr>`).join('')}</tbody></table><h3 style="margin:10px 0 8px">Pembahasan</h3>`;
+    const items = quizData.map((q, i) => { const res = evalState.results[i];
+      return `<div class="pa-q"><p style="margin:0 0 4px"><strong>${q.q}</strong> <em>(${r.rows[i].status.label})</em></p>${printQuestionBody(q, i)}<div style="margin-top:4px">${res ? res.detail : '<p><em>Soal ini belum dikirim.</em></p>'}<strong>Pembahasan:</strong> ${q.exp}</div></div>`; }).join('');
+    area.innerHTML = head + items; renderMath(area); setTimeout(() => window.print(), 150);
+  }
+
+  window.addEventListener('scroll', () => { if (window.scrollX || window.scrollY) window.scrollTo(0, 0); if (document.body.scrollTop) document.body.scrollTop = 0; if (document.documentElement.scrollTop) document.documentElement.scrollTop = 0; }, { passive: true });
+
+  function saveReflection(e) {
+    e.preventDefault();
+    try { localStorage.setItem('trigolimitlab-refleksi', JSON.stringify({ q1: $q('ref-q1').value, q2: $q('ref-q2').value, q3: $q('ref-q3').value, waktu: new Date().toISOString() })); } catch (err) {}
+    $q('reflection-saved-msg').classList.remove('hidden');
+  }
+
+  function renderMath(root) {
+    if (window.renderMathInElement) {
+      const target = (root && root.nodeType === 1) ? root : document.body;
+      renderMathInElement(target, {
+        delimiters: [{ left: '$$', right: '$$', display: true }, { left: '$', right: '$', display: false }, { left: '\\(', right: '\\)', display: false }, { left: '\\[', right: '\\]', display: true }],
+        throwOnError: false, errorColor: '#cc0000'
+      });
+    }
+  }
+  </script>
+</body>
+</html>
